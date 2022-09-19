@@ -69,19 +69,22 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testInit001() {
 		try {
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("init");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
 			playerListField.setAccessible(true);
+			
 			//テストメソッド
 			method.invoke(this.jankenCuiGameApplicationImpl);
+			
 			//検証
 			@SuppressWarnings("unchecked")
 			List<JankenPlayer> playerList =(List<JankenPlayer>) playerListField.get(this.jankenCuiGameApplicationImpl);
 			assertEquals(playerList, this.emptyPlayerList);
 			assertEquals(playerList.size(), 0);
 
-		}catch(NoSuchMethodException | NoSuchFieldException| SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -95,6 +98,7 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testInit002() {
 		try {
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("init");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
@@ -110,7 +114,7 @@ public class JankenCuiGameApplicationImplTest{
 			assertEquals(playerList, this.emptyPlayerList);
 			assertEquals(playerList.size(), 0);
 
-		}catch(NoSuchMethodException | NoSuchFieldException| SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -126,6 +130,8 @@ public class JankenCuiGameApplicationImplTest{
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt()).thenReturn(this.multi);
+			
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("createHumanOfJankenPlayer");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
@@ -142,7 +148,8 @@ public class JankenCuiGameApplicationImplTest{
 			assertEquals(playerList.get(0).getPlayerName(), this.humanPlayer1.getPlayerName());
 			assertEquals(playerList.get(1).getPlayerName(), this.humanPlayer2.getPlayerName());
 			mockKeybord.verify(() -> Keybord.getInt(), times(1));
-		}catch(NoSuchFieldException | NullPointerException| IllegalArgumentException | IllegalAccessException | InvocationTargetException | NoSuchMethodException  e) {
+			
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -158,6 +165,8 @@ public class JankenCuiGameApplicationImplTest{
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt()).thenReturn(this.none);
+			
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("createHumanOfJankenPlayer");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
@@ -172,7 +181,8 @@ public class JankenCuiGameApplicationImplTest{
 			List<JankenPlayer> playerList =(List<JankenPlayer>) playerListField.get(this.jankenCuiGameApplicationImpl);
 			assertEquals(playerList.size(), this.none);
 			mockKeybord.verify(() -> Keybord.getInt(), times(1));
-		}catch(NoSuchFieldException | NullPointerException| IllegalArgumentException | IllegalAccessException | InvocationTargetException | NoSuchMethodException  e) {
+			
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -188,6 +198,8 @@ public class JankenCuiGameApplicationImplTest{
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt()).thenThrow(new ApplicationException(null)).thenReturn(this.multi);
+			
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("createHumanOfJankenPlayer");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
@@ -204,7 +216,8 @@ public class JankenCuiGameApplicationImplTest{
 			assertEquals(playerList.get(0).getPlayerName(), this.humanPlayer1.getPlayerName());
 			assertEquals(playerList.get(1).getPlayerName(), this.humanPlayer2.getPlayerName());
 			mockKeybord.verify(() -> Keybord.getInt(), times(2));
-		}catch(NoSuchFieldException | NullPointerException| IllegalArgumentException | IllegalAccessException | InvocationTargetException | NoSuchMethodException  e) {
+			
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -220,15 +233,18 @@ public class JankenCuiGameApplicationImplTest{
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt()).thenReturn(this.multi);
+			
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("createHumanOfJankenPlayer");
 			method.setAccessible(true);
 
 			//テストメソッド
 			InvocationTargetException e = assertThrows(InvocationTargetException.class, () -> method.invoke(this.jankenCuiGameApplicationImpl));
+			
 			//検証
 			assertEquals(NullPointerException.class , e.getTargetException().getClass());
 			mockKeybord.verify(() -> Keybord.getInt(), times(1));
-		}catch(NullPointerException| SecurityException  | NoSuchMethodException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -244,6 +260,8 @@ public class JankenCuiGameApplicationImplTest{
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt()).thenReturn(this.multi);
+			
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("createCpuOfJankenPlayer");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
@@ -260,7 +278,8 @@ public class JankenCuiGameApplicationImplTest{
 			assertEquals(playerList.get(0).getPlayerName(), this.cpuPlayer1.getPlayerName());
 			assertEquals(playerList.get(1).getPlayerName(), this.cpuPlayer2.getPlayerName());
 			mockKeybord.verify(() -> Keybord.getInt(), times(1));
-		}catch(NoSuchFieldException | NullPointerException| IllegalArgumentException | IllegalAccessException | InvocationTargetException | NoSuchMethodException  e) {
+			
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -276,6 +295,8 @@ public class JankenCuiGameApplicationImplTest{
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt()).thenReturn(this.none);
+			
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("createCpuOfJankenPlayer");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
@@ -290,7 +311,8 @@ public class JankenCuiGameApplicationImplTest{
 			List<JankenPlayer> playerList =(List<JankenPlayer>) playerListField.get(this.jankenCuiGameApplicationImpl);
 			assertEquals(playerList.size(), this.none);
 			mockKeybord.verify(() -> Keybord.getInt(), times(1));
-		}catch(NoSuchFieldException | NullPointerException| IllegalArgumentException | IllegalAccessException | InvocationTargetException | NoSuchMethodException  e) {
+			
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -306,6 +328,8 @@ public class JankenCuiGameApplicationImplTest{
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt()).thenThrow(new ApplicationException(null)).thenReturn(this.multi);
+			
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("createCpuOfJankenPlayer");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
@@ -322,7 +346,8 @@ public class JankenCuiGameApplicationImplTest{
 			assertEquals(playerList.get(0).getPlayerName(), this.cpuPlayer1.getPlayerName());
 			assertEquals(playerList.get(1).getPlayerName(), this.cpuPlayer2.getPlayerName());
 			mockKeybord.verify(() -> Keybord.getInt(), times(2));
-		}catch(NoSuchFieldException | NullPointerException| IllegalArgumentException | IllegalAccessException | InvocationTargetException | NoSuchMethodException  e) {
+			
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -338,6 +363,8 @@ public class JankenCuiGameApplicationImplTest{
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt()).thenReturn(this.multi);
+			
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("createCpuOfJankenPlayer");
 			method.setAccessible(true);
 
@@ -346,7 +373,8 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			assertEquals(NullPointerException.class , e.getTargetException().getClass());
 			mockKeybord.verify(() -> Keybord.getInt(), times(1));
-		}catch(NullPointerException| SecurityException  | NoSuchMethodException  e) {
+			
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -363,6 +391,7 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testSelectJankenHand001() {
 		try{
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("selectJankenHand");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
@@ -383,7 +412,7 @@ public class JankenCuiGameApplicationImplTest{
 			verify(mockHumanPlayer, times(1)).selectJankenHand();
 			verify(mockCpuPlayer, times(1)).selectJankenHand();
 
-		}catch(NullPointerException| SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ExceptionInInitializerError | NoSuchFieldException | SystemException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -397,14 +426,15 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testSelectJankenHand002() {
 		try{
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("selectJankenHand");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
 			playerListField.setAccessible(true);
 
 			//モック化
+			@SuppressWarnings("unchecked")
 			List<JankenPlayer> playerList = mock(new ArrayList<JankenPlayer>().getClass());
-
 			playerListField.set(this.jankenCuiGameApplicationImpl, playerList);
 
 			//テストメソッド
@@ -413,7 +443,7 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			verify(playerList, times(0)).get(0);
 
-		}catch(NullPointerException| SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ExceptionInInitializerError | NoSuchFieldException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -427,6 +457,7 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testSelectJankenHand003() {
 		try{
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("selectJankenHand");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
@@ -439,7 +470,7 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			assertEquals(NullPointerException.class , e.getTargetException().getClass());
 
-		}catch(NullPointerException| SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException  | ExceptionInInitializerError | NoSuchFieldException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -453,10 +484,12 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testJudge001() {
 		try{
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("judge");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
 			playerListField.setAccessible(true);
+			
 			//モック化
 			JankenPlayer humanPlayer = mock(HumanJankenPlayerImpl.class);
 			JankenPlayer cpuPlayer = mock(CpuJankenPlayerImpl.class);
@@ -473,7 +506,7 @@ public class JankenCuiGameApplicationImplTest{
 			verify(humanPlayer, times(1)).getJankenHand();
 			verify(cpuPlayer, times(1)).getJankenHand();
 
-		}catch(NullPointerException| SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException  | ExceptionInInitializerError | NoSuchFieldException | InvocationTargetException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -487,10 +520,12 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testJudge002() {
 		try{
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("judge");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
 			playerListField.setAccessible(true);
+			
 			//モック化
 			JankenPlayer humanPlayer = mock(HumanJankenPlayerImpl.class);
 			JankenPlayer cpuPlayer = mock(CpuJankenPlayerImpl.class);
@@ -507,7 +542,7 @@ public class JankenCuiGameApplicationImplTest{
 			verify(humanPlayer, times(1)).getJankenHand();
 			verify(cpuPlayer, times(1)).getJankenHand();
 
-		}catch(NullPointerException| SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException  | ExceptionInInitializerError | NoSuchFieldException | InvocationTargetException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -521,10 +556,12 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testJudge003() {
 		try{
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("judge");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
 			playerListField.setAccessible(true);
+			
 			//モック化
 			JankenPlayer humanPlayer = mock(HumanJankenPlayerImpl.class);
 			JankenPlayer cpuPlayer = mock(CpuJankenPlayerImpl.class);
@@ -541,7 +578,7 @@ public class JankenCuiGameApplicationImplTest{
 			verify(humanPlayer, times(1)).getJankenHand();
 			verify(cpuPlayer, times(1)).getJankenHand();
 
-		}catch(NullPointerException| SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException  | ExceptionInInitializerError | NoSuchFieldException | InvocationTargetException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -555,10 +592,12 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testJudge004() {
 		try{
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("judge");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
 			playerListField.setAccessible(true);
+			
 			//モック化
 			JankenPlayer humanPlayer = mock(HumanJankenPlayerImpl.class);
 			JankenPlayer cpuPlayer = mock(CpuJankenPlayerImpl.class);
@@ -575,7 +614,7 @@ public class JankenCuiGameApplicationImplTest{
 			verify(humanPlayer, times(1)).getJankenHand();
 			verify(cpuPlayer, times(1)).getJankenHand();
 
-		}catch(NullPointerException| SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException  | ExceptionInInitializerError | NoSuchFieldException | InvocationTargetException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -589,10 +628,12 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testJudge005() {
 		try{
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("judge");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
 			playerListField.setAccessible(true);
+			
 			//モック化
 			JankenPlayer humanPlayer = mock(HumanJankenPlayerImpl.class);
 			JankenPlayer cpuPlayer = mock(CpuJankenPlayerImpl.class);
@@ -623,10 +664,12 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testJudge006() {
 		try{
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("judge");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
 			playerListField.setAccessible(true);
+			
 			//モック化
 			JankenPlayer humanPlayer = mock(HumanJankenPlayerImpl.class);
 			JankenPlayer cpuPlayer = mock(CpuJankenPlayerImpl.class);
@@ -643,7 +686,7 @@ public class JankenCuiGameApplicationImplTest{
 			verify(humanPlayer, times(1)).getJankenHand();
 			verify(cpuPlayer, times(0)).getJankenHand();
 
-		}catch(NullPointerException| SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException  | ExceptionInInitializerError | NoSuchFieldException e) {
+		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -657,12 +700,14 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testViewWinner001() {
 		try{
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("viewWinner");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			Field winHandField = JankenCuiGameApplicationImpl.class.getDeclaredField("winHand");
 			method.setAccessible(true);
 			playerListField.setAccessible(true);
 			winHandField.setAccessible(true);
+			
 			//モック化
 			JankenPlayer humanPlayer = mock(HumanJankenPlayerImpl.class);
 			JankenPlayer cpuPlayer = mock(CpuJankenPlayerImpl.class);
@@ -671,7 +716,6 @@ public class JankenCuiGameApplicationImplTest{
 			when(humanPlayer.getPlayerName()).thenReturn(this.playerName1);
 			when(cpuPlayer.getPlayerName()).thenReturn(this.cpuName1);
 			List<JankenPlayer> playerList = new ArrayList<JankenPlayer>(Arrays.asList(humanPlayer, cpuPlayer));
-
 			playerListField.set(this.jankenCuiGameApplicationImpl, playerList);
 			winHandField.set(this.jankenCuiGameApplicationImpl, this.rock);
 
@@ -684,7 +728,7 @@ public class JankenCuiGameApplicationImplTest{
 			verify(humanPlayer, times(1)).getPlayerName();
 			verify(cpuPlayer, times(0)).getPlayerName();
 
-		}catch(NullPointerException| SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException  | ExceptionInInitializerError | NoSuchFieldException | InvocationTargetException e) {
+		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -699,12 +743,14 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testViewWinner002() {
 		try{
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("viewWinner");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			Field winHandField = JankenCuiGameApplicationImpl.class.getDeclaredField("winHand");
 			method.setAccessible(true);
 			playerListField.setAccessible(true);
 			winHandField.setAccessible(true);
+			
 			//モック化
 			JankenPlayer humanPlayer = mock(HumanJankenPlayerImpl.class);
 			JankenPlayer cpuPlayer = mock(CpuJankenPlayerImpl.class);
@@ -713,7 +759,6 @@ public class JankenCuiGameApplicationImplTest{
 			when(humanPlayer.getPlayerName()).thenReturn(this.playerName1);
 			when(cpuPlayer.getPlayerName()).thenReturn(this.cpuName1);
 			List<JankenPlayer> playerList = new ArrayList<JankenPlayer>(Arrays.asList(humanPlayer, cpuPlayer));
-
 			playerListField.set(this.jankenCuiGameApplicationImpl, playerList);
 			winHandField.set(this.jankenCuiGameApplicationImpl, this.scissors);
 
@@ -726,7 +771,7 @@ public class JankenCuiGameApplicationImplTest{
 			verify(humanPlayer, times(0)).getPlayerName();
 			verify(cpuPlayer, times(0)).getPlayerName();
 
-		}catch(NullPointerException| SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException  | ExceptionInInitializerError | NoSuchFieldException | InvocationTargetException e) {
+		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -739,8 +784,8 @@ public class JankenCuiGameApplicationImplTest{
 	 */
 	@Test
 	public void testIsCheckJankenPlayerCount001() {
-		//モック化
 		try{
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("isCheckJankenPlayerCount");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
@@ -753,7 +798,7 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			assertEquals(true, result);
 
-		}catch(NullPointerException| SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ExceptionInInitializerError | NoSuchFieldException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -766,8 +811,8 @@ public class JankenCuiGameApplicationImplTest{
 	 */
 	@Test
 	public void testIsCheckJankenPlayerCount002() {
-		//モック化
 		try{
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("isCheckJankenPlayerCount");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
@@ -780,7 +825,7 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			assertEquals(false, result);
 
-		}catch(NullPointerException| SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ExceptionInInitializerError | NoSuchFieldException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -793,8 +838,8 @@ public class JankenCuiGameApplicationImplTest{
 	 */
 	@Test
 	public void testIsCheckJankenPlayerCount003() {
-		//モック化
 		try{
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("isCheckJankenPlayerCount");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
@@ -807,7 +852,7 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			assertEquals(NullPointerException.class , e.getTargetException().getClass());
 
-		}catch(NullPointerException| SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException  | ExceptionInInitializerError | NoSuchFieldException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -823,6 +868,8 @@ public class JankenCuiGameApplicationImplTest{
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt(this.one, this.two)).thenReturn(this.one);
+			
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("hasGameContinue");
 			method.setAccessible(true);
 
@@ -832,7 +879,8 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			assertEquals(result, true);
 			mockKeybord.verify(() -> Keybord.getInt(this.one, this.two), times(1));
-		}catch(NullPointerException| SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ExceptionInInitializerError  e) {
+			
+		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -848,6 +896,8 @@ public class JankenCuiGameApplicationImplTest{
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt(this.one, this.two)).thenReturn(this.two);
+			
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("hasGameContinue");
 			method.setAccessible(true);
 
@@ -857,7 +907,8 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			assertEquals(result, false);
 			mockKeybord.verify(() -> Keybord.getInt(this.one, this.two), times(1));
-		}catch(NullPointerException| SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ExceptionInInitializerError  e) {
+			
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -873,6 +924,8 @@ public class JankenCuiGameApplicationImplTest{
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt(this.one, this.two)).thenThrow(new ApplicationException(null)).thenReturn(this.one);
+			
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("hasGameContinue");
 			method.setAccessible(true);
 
@@ -882,7 +935,8 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			assertEquals(result, true);
 			mockKeybord.verify(() -> Keybord.getInt(this.one, this.two), times(2));
-		}catch(NullPointerException| SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ExceptionInInitializerError  e) {
+			
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -898,6 +952,8 @@ public class JankenCuiGameApplicationImplTest{
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt(this.one, this.two)).thenReturn(this.illegalValue);
+			
+			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("hasGameContinue");
 			method.setAccessible(true);
 
@@ -907,7 +963,8 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			assertEquals(SystemException.class , e.getTargetException().getClass());
 			mockKeybord.verify(() -> Keybord.getInt(this.one, this.two), times(1));
-		}catch(NullPointerException| SecurityException | NoSuchMethodException | IllegalArgumentException  | ExceptionInInitializerError  e) {
+			
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -921,6 +978,7 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testGetPlayerList001() {
 		try {
+			//準備
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			playerListField.setAccessible(true);
 			playerListField.set(this.jankenCuiGameApplicationImpl, this.playerList);
@@ -933,7 +991,7 @@ public class JankenCuiGameApplicationImplTest{
 			assertEquals(this.humanPlayer1.getPlayerName(), result.get(0).getPlayerName());
 			assertEquals(this.cpuPlayer1.getPlayerName(), result.get(1).getPlayerName());
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -947,6 +1005,7 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testGetPlayerList002() {
 		try {
+			//準備
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			playerListField.setAccessible(true);
 			playerListField.set(this.jankenCuiGameApplicationImpl, this.emptyPlayerList);
@@ -957,7 +1016,7 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			assertEquals(this.emptyPlayerList.size(), result.size());
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -971,6 +1030,7 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testGetPlayerList003() {
 		try {
+			//準備
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			playerListField.setAccessible(true);
 			playerListField.set(this.jankenCuiGameApplicationImpl, this.nullPlayerList);
@@ -981,7 +1041,7 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			assertNull(result);
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -995,9 +1055,9 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testSetPlayerList001() {
 		try {
+			//準備
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			playerListField.setAccessible(true);
-
 
 			//テストメソッド
 			this.jankenCuiGameApplicationImpl.setPlayerList(this.playerList);
@@ -1009,7 +1069,7 @@ public class JankenCuiGameApplicationImplTest{
 			assertEquals(this.humanPlayer1.getPlayerName(), result.get(0).getPlayerName());
 			assertEquals(this.cpuPlayer1.getPlayerName(), result.get(1).getPlayerName());
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -1023,9 +1083,9 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testSetPlayerList002() {
 		try {
+			//準備
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			playerListField.setAccessible(true);
-
 
 			//テストメソッド
 			this.jankenCuiGameApplicationImpl.setPlayerList(this.emptyPlayerList);
@@ -1035,7 +1095,7 @@ public class JankenCuiGameApplicationImplTest{
 			List<JankenPlayer> result = (List<JankenPlayer>) playerListField.get(this.jankenCuiGameApplicationImpl);
 			assertEquals(this.emptyPlayerList.size(), result.size());
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -1049,9 +1109,9 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testSetPlayerList003() {
 		try {
+			//準備
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			playerListField.setAccessible(true);
-
 
 			//テストメソッド
 			this.jankenCuiGameApplicationImpl.setPlayerList(this.nullPlayerList);
@@ -1061,7 +1121,7 @@ public class JankenCuiGameApplicationImplTest{
 			List<JankenPlayer> result = (List<JankenPlayer>) playerListField.get(this.jankenCuiGameApplicationImpl);
 			assertNull(result);
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -1076,6 +1136,7 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testGetWinHand001() {
 		try {
+			//準備
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("winHand");
 			playerListField.setAccessible(true);
 			playerListField.set(this.jankenCuiGameApplicationImpl, this.one);
@@ -1086,7 +1147,7 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			assertEquals(this.one, result);
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -1100,6 +1161,7 @@ public class JankenCuiGameApplicationImplTest{
 	@Test
 	public void testSetWinHand001() {
 		try {
+			//準備
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("winHand");
 			playerListField.setAccessible(true);
 
@@ -1110,7 +1172,7 @@ public class JankenCuiGameApplicationImplTest{
 			int result = (int) playerListField.get(this.jankenCuiGameApplicationImpl);
 			assertEquals(this.one, result);
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -1137,9 +1199,11 @@ public class JankenCuiGameApplicationImplTest{
 			mockKeybord.when(() -> Keybord.getInt(this.one, this.two)).thenReturn(this.one).thenReturn(this.two);
 			//HumanPlayer:チョキ、HumanPlayer:グー、HumanPlayer:グー
 			mockKeybord.when(() -> Keybord.getInt(this.rock, this.paper)).thenReturn(this.scissors).thenReturn(this.rock).thenReturn(this.rock);
-
+			
+			//テストメソッド
 			this.jankenCuiGameApplicationImpl.action();
-
+			
+			//検証
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
