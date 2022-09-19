@@ -41,49 +41,62 @@ public class HumanJankenPlayerImplTest{
 	@InjectMocks
 	private HumanJankenPlayerImpl player = new HumanJankenPlayerImpl(this.playerName);
 
+	
 	/**
 	 * testConstructor001 正常系
-	 * HumanJankenPlayerImpl(String playerName)
-	 * 普通の文字列が渡される
+	 * public HumanJankenPlayerImpl(String playerName)
+	 * --確認事項--
+	 * インスタンス生成時に渡された引数がフィールドに代入されているか
+	 * --条件--
+	 *	引数は文字列
+	 * --検証項目--
+	 * 1. インスタンス生成時に渡した文字列とplayerNameフィールドの値が等しいか
 	 */
 	@Test
 	public void testConstructor001() {
 		try {
+			//準備
+			Field playerNameField = HumanJankenPlayerImpl.class.getDeclaredField("playerName");
+			playerNameField.setAccessible(true);
+			
 			//テストメソッド
 			HumanJankenPlayerImpl player = new HumanJankenPlayerImpl(this.playerName);
 
 			//検証
-			Field playerNameField = HumanJankenPlayerImpl.class.getDeclaredField("playerName");
-			playerNameField.setAccessible(true);
-			String result = String.valueOf(playerNameField.get(player));
-
+			String result = (String) playerNameField.get(player);
 			assertEquals(this.playerName, result);
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
 	}
 
 	/**
-	 * testConstructor002 異常系
-	 * HumanJankenPlayerImpl(String playerName)
-	 * nullが渡される
+	 * testConstructor002 正常系
+	 * public HumanJankenPlayerImpl(String playerName)
+	 * --確認事項--
+	 * インスタンス生成時に渡された引数がフィールドに代入されているか
+	 * --条件--
+	 *	引数はnull
+	 * --検証項目--
+	 * 1. playerNameフィールドの値がnullであるか
 	 */
 	@Test
 	public void testConstructor002() {
 		try {
+			//準備
+			Field playerNameField = HumanJankenPlayerImpl.class.getDeclaredField("playerName");
+			playerNameField.setAccessible(true);
+			
 			//テストメソッド
 			HumanJankenPlayerImpl player = new HumanJankenPlayerImpl(this.nullPlayerName);
 
 			//検証
-			Field playerNameField = HumanJankenPlayerImpl.class.getDeclaredField("playerName");
-			playerNameField.setAccessible(true);
 			String result = (String) playerNameField.get(player);
-
 			assertNull(result);
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -91,12 +104,18 @@ public class HumanJankenPlayerImplTest{
 
 	/**
 	 * testGetPlayerName001 正常系
-	 * String getPlayerName()
-	 * playerNameフィールドに普通の文字列が代入されている
+	 * public String getPlayerName()
+	 * --確認事項--
+	 * playerNameフィールドの値が返されるか
+	 * --条件--
+	 *	playerNameフィールドの値は文字列
+	 * --検証項目--
+	 * 1. 戻り値とplayerNameフィールドの値が等しいか
 	 */
 	@Test
 	public void testGetPlayerName001() {
 		try {
+			//準備
 			Field playerNameField = HumanJankenPlayerImpl.class.getDeclaredField("playerName");
 			playerNameField.setAccessible(true);
 			playerNameField.set(this.player, this.playerName);
@@ -107,20 +126,26 @@ public class HumanJankenPlayerImplTest{
 			//検証
 			assertEquals(this.playerName, result);
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
 	}
 
 	/**
-	 * testGetPlayerName002 異常系
-	 * String getPlayerName()
-	 * playerNameフィールドに普通の文字列が代入されていない
+	 * testGetPlayerName002 正常系
+	 * public String getPlayerName()
+	 * --確認事項--
+	 * playerNameフィールドの値が返されるか
+	 * --条件--
+	 *	playerNameフィールドの値はnull
+	 * --検証項目--
+	 * 1. 戻り値とnullであるか
 	 */
 	@Test
 	public void testGetPlayerName002() {
 		try {
+			//準備
 			Field playerNameField = HumanJankenPlayerImpl.class.getDeclaredField("playerName");
 			playerNameField.setAccessible(true);
 			playerNameField.set(this.player, this.nullPlayerName);
@@ -131,7 +156,7 @@ public class HumanJankenPlayerImplTest{
 			//検証
 			assertNull(result);
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -139,12 +164,18 @@ public class HumanJankenPlayerImplTest{
 
 	/**
 	 * testGetJankenHand001 正常系
-	 * int getJankenHand()
-	 * playerHandフィールドに値が代入されている
+	 * public int getJankenHand()
+	 * --確認事項--
+	 * playerHandフィールドの値が返されるか
+	 * --条件--
+	 *	playerHandフィールドの値は整数
+	 * --検証項目--
+	 * 1. 戻り値とplayerHandフィールドの値は等しいか
 	 */
 	@Test
 	public void testGetJankenHand001() {
 		try {
+			//準備
 			Field playerHandField = HumanJankenPlayerImpl.class.getDeclaredField("playerHand");
 			playerHandField.setAccessible(true);
 			playerHandField.set(this.player, this.playerHand);
@@ -153,18 +184,23 @@ public class HumanJankenPlayerImplTest{
 			int result = this.player.getJankenHand();
 
 			//検証
-			assertEquals(result, this.playerHand);
+			assertEquals(this.playerHand, result);
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
 	}
 
 	/**
-	 * testGetJankenHand001 異常系
-	 * int getJankenHand()
-	 * playerHandフィールドに値が代入されていない
+	 * testGetJankenHand002 正常系
+	 * public int getJankenHand()
+	 * --確認事項--
+	 * playerHandフィールドの値が返されるか
+	 * --条件--
+	 *	playerHandフィールドの値をセットしない
+	 * --検証項目--
+	 * 1. 戻り値は0であるか
 	 */
 	@Test
 	public void testGetJankenHand002() {
@@ -173,13 +209,20 @@ public class HumanJankenPlayerImplTest{
 		int result = this.player.getJankenHand();
 
 		//検証
-		assertEquals(result, this.notSetting);
+		assertEquals(this.notSetting, result);
 	}
 
 	/**
 	 * testSelectJankenHand001 正常系
-	 * void selectJankenHand() throws SystemException
-	 * playerHandフィールドにグーの値が代入する
+	 * public void selectJankenHand() throws SystemException
+	 * --確認事項--
+	 * KeybordクラスはgetIntで1(グー)を返すmock
+	 * playerHandフィールドに列挙型の定数が代入される
+	 * --条件--
+	 *	KeybordのgetIntは1を返す
+	 * --検証項目--
+	 * 1. playerHandフィールドの値はJankenParamのROCKの値であるか
+	 * 2. KeybordのgetIntは1回呼び出される
 	 */
 	@Test
 	public void testSelectJankenHand001() {
@@ -198,7 +241,7 @@ public class HumanJankenPlayerImplTest{
 			assertEquals(playerHand, this.rock);
 			mockKeybord.verify(() -> Keybord.getInt(this.from, this.to), times(1));
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException | SystemException | ApplicationException e) {
+		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -206,91 +249,126 @@ public class HumanJankenPlayerImplTest{
 
 	/**
 	 * testSelectJankenHand002 正常系
-	 * void selectJankenHand() throws SystemException
-	 * playerHandフィールドにチョキの値が代入する
+	 * public void selectJankenHand() throws SystemException
+	 * --確認事項--
+	 * KeybordクラスはgetIntで2(チョキ)を返すmock
+	 * playerHandフィールドに列挙型の定数が代入される
+	 * --条件--
+	 *	KeybordのgetIntは２を返す
+	 * --検証項目--
+	 * 1. playerHandフィールドの値はJankenParamのSCISSORSの値であるか
+	 * 2. KeybordのgetIntは1回呼び出される
 	 */
 	@Test
 	public void testSelectJankenHand002() {
+		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt(this.from, this.to)).thenReturn(this.scissors);
-
+			
+			//準備
+			Field playerHandField = HumanJankenPlayerImpl.class.getDeclaredField("playerHand");
+			playerHandField.setAccessible(true);
+			
 			//テストメソッド
 			this.player.selectJankenHand();
 
 			//検証
-			Field playerHandField = HumanJankenPlayerImpl.class.getDeclaredField("playerHand");
-			playerHandField.setAccessible(true);
 			int playerHand = (Integer) playerHandField.get(this.player);
-
 			assertEquals(playerHand, this.scissors);
 			mockKeybord.verify(() -> Keybord.getInt(this.from, this.to), times(1));
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException | SystemException | ApplicationException e) {
+		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
 		}
 	}
 
 	/**
-	 * testSelectJankenHand002 正常系
-	 * void selectJankenHand() throws SystemException
-	 * playerHandフィールドにパーの値が代入する
+	 * testSelectJankenHand003 正常系
+	 * public void selectJankenHand() throws SystemException
+	 * --確認事項--
+	 * KeybordクラスはgetIntで3(パー)を返すmock
+	 * playerHandフィールドに列挙型の定数が代入される
+	 * --条件--
+	 *	KeybordのgetIntは２を返す
+	 * --検証項目--
+	 * 1. playerHandフィールドの値はJankenParamのPAPERの値であるか
+	 * 2. KeybordのgetIntは1回呼び出される
 	 */
 	@Test
 	public void testSelectJankenHand003() {
+		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt(this.from, this.to)).thenReturn(this.paper);
-
+			
+			//準備
+			Field playerHandField = HumanJankenPlayerImpl.class.getDeclaredField("playerHand");
+			playerHandField.setAccessible(true);
+			
 			//テストメソッド
 			this.player.selectJankenHand();
 
 			//検証
-			Field playerHandField = HumanJankenPlayerImpl.class.getDeclaredField("playerHand");
-			playerHandField.setAccessible(true);
 			int playerHand = (Integer) playerHandField.get(this.player);
-
 			assertEquals(playerHand, this.paper);
 			mockKeybord.verify(() -> Keybord.getInt(this.from, this.to), times(1));
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException | SystemException | ApplicationException e) {
+		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
 		}
 	}
+
 	/**
 	 * testSelectJankenHand004 正常系
-	 * void selectJankenHand() throws SystemException
-	 * KeybordのgetIntで不正な値が入力されApplicationExceptionが発生し、再度入力が求められて２回目に正常な値を入力する
+	 * public void selectJankenHand() throws SystemException
+	 * --確認事項--
+	 * KeybordクラスはgetIntで1回目にApplicationExceptionが発生し、2回目に1(グー)を返すmock
+	 * playerHandフィールドに列挙型の定数が代入される
+	 * --条件--
+	 *	KeybordのgetIntは２を返す
+	 * --検証項目--
+	 * 1. playerHandフィールドの値はJankenParamのROCKの値であるか
+	 * 2. KeybordのgetIntは2回呼び出される
 	 */
 	@Test
 	public void testSelectJankenHand004() {
+		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt(this.from, this.to)).thenThrow(new ApplicationException(null)).thenReturn(this.rock);
-
+			
+			//準備
+			Field playerHandField = HumanJankenPlayerImpl.class.getDeclaredField("playerHand");
+			playerHandField.setAccessible(true);
+			
 			//テストメソッド
 			this.player.selectJankenHand();
 
 			//検証
-			Field playerHandField = HumanJankenPlayerImpl.class.getDeclaredField("playerHand");
-			playerHandField.setAccessible(true);
 			int playerHand = (Integer) playerHandField.get(this.player);
-
 			assertEquals(playerHand, this.rock);
 			mockKeybord.verify(() -> Keybord.getInt(this.from, this.to), times(2));
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException | SystemException | ApplicationException e) {
+		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
 		}
 	}
 
 	/**
-	 * testSelectJankenHand005 異常系
-	 * void selectJankenHand() throws SystemException
-	 * KeybordのgetIntから不正な値が返され、JankenParamのgetEnumに渡されたときNullPointerExceptionが発生する
+	 * testSelectJankenHand005 正常系
+	 * public void selectJankenHand() throws SystemException
+	 * --確認事項--
+	 * KeybordのgetIntから範囲外の整数がJankenParamのgetEnumに渡された場合NullPointerExceptionが発生する
+	 * --条件--
+	 *	KeybordクラスはgetIntで-1を返すmock
+	 * --検証項目--
+	 * 1. NullPointerExceptionがスローされるか
+	 * 2. KeybordのgetIntは1回呼び出される
 	 */
 	@Test
 	public void testSelectJankenHand005() {
+		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt(this.from, this.to)).thenReturn(this.illegalValue);
 
@@ -301,12 +379,20 @@ public class HumanJankenPlayerImplTest{
 	}
 
 	/**
-	 * testSelectJankenHand006 異常系
-	 * void selectJankenHand() throws SystemException
-	 * KeybordのgetIntから不正な値が返されかつ0であった場合、JankenParamのgetEnumに渡されたらDRAWが返されdefaultに処理が移る
+	 * testSelectJankenHand006 正常系
+	 * public void selectJankenHand() throws SystemException
+	 * --確認事項--
+	 * KeybordのgetIntから範囲外の0がJankenParamのgetEnumに渡された場合SystemExceptionが発生する
+	 * --条件--
+	 *	KeybordクラスはgetIntで0を返すmock
+	 * --検証項目--
+	 * 1. SystemExceptionがスローされるか
+	 * 2. メッセージ「パラメーターの値が不正です。」が含まれているか
+	 * 2. KeybordのgetIntは1回呼び出される
 	 */
 	@Test
 	public void testSelectJankenHand006() {
+		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt(this.from, this.to)).thenReturn(this.zeroValue);
 
