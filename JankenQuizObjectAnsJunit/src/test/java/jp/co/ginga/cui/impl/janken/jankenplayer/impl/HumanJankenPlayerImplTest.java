@@ -140,7 +140,7 @@ public class HumanJankenPlayerImplTest{
 	 * --条件--
 	 *	playerNameフィールドの値はnull
 	 * --検証項目--
-	 * 1. 戻り値とnullであるか
+	 * 1. 戻り値はnullであるか
 	 */
 	@Test
 	public void testGetPlayerName002() {
@@ -216,10 +216,9 @@ public class HumanJankenPlayerImplTest{
 	 * testSelectJankenHand001 正常系
 	 * public void selectJankenHand() throws SystemException
 	 * --確認事項--
-	 * KeybordクラスはgetIntで1(グー)を返すmock
 	 * playerHandフィールドに列挙型の定数が代入される
 	 * --条件--
-	 *	KeybordのgetIntは1を返す
+	 * KeybordクラスはgetIntで1(グー)を返すmock
 	 * --検証項目--
 	 * 1. playerHandフィールドの値はJankenParamのROCKの値であるか
 	 * 2. KeybordのgetIntは1回呼び出される
@@ -251,10 +250,9 @@ public class HumanJankenPlayerImplTest{
 	 * testSelectJankenHand002 正常系
 	 * public void selectJankenHand() throws SystemException
 	 * --確認事項--
-	 * KeybordクラスはgetIntで2(チョキ)を返すmock
 	 * playerHandフィールドに列挙型の定数が代入される
 	 * --条件--
-	 *	KeybordのgetIntは２を返す
+	 *	 KeybordクラスはgetIntで2(チョキ)を返すmock
 	 * --検証項目--
 	 * 1. playerHandフィールドの値はJankenParamのSCISSORSの値であるか
 	 * 2. KeybordのgetIntは1回呼び出される
@@ -287,10 +285,9 @@ public class HumanJankenPlayerImplTest{
 	 * testSelectJankenHand003 正常系
 	 * public void selectJankenHand() throws SystemException
 	 * --確認事項--
-	 * KeybordクラスはgetIntで3(パー)を返すmock
 	 * playerHandフィールドに列挙型の定数が代入される
 	 * --条件--
-	 *	KeybordのgetIntは２を返す
+	 * KeybordクラスはgetIntで3(パー)を返すmock
 	 * --検証項目--
 	 * 1. playerHandフィールドの値はJankenParamのPAPERの値であるか
 	 * 2. KeybordのgetIntは1回呼び出される
@@ -323,10 +320,9 @@ public class HumanJankenPlayerImplTest{
 	 * testSelectJankenHand004 正常系
 	 * public void selectJankenHand() throws SystemException
 	 * --確認事項--
-	 * KeybordクラスはgetIntで1回目にApplicationExceptionが発生し、2回目に1(グー)を返すmock
 	 * playerHandフィールドに列挙型の定数が代入される
 	 * --条件--
-	 *	KeybordのgetIntは２を返す
+	 * KeybordクラスはgetIntで1回目にApplicationExceptionが発生し、2回目に1(グー)を返すmock
 	 * --検証項目--
 	 * 1. playerHandフィールドの値はJankenParamのROCKの値であるか
 	 * 2. KeybordのgetIntは2回呼び出される

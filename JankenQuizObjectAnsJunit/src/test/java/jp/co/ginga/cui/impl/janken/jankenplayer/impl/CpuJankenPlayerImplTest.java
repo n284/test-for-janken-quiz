@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.MockedConstruction;
 
 import jp.co.ginga.cui.impl.janken.JankenParam;
-import jp.co.ginga.util.exception.ApplicationException;
 import jp.co.ginga.util.exception.SystemException;
 
 /**
@@ -42,47 +41,59 @@ public class CpuJankenPlayerImplTest {
 
 	/**
 	 * testConstructor001 正常系
-	 * CpuJankenPlayerImpl(String playerName)
-	 * 普通の文字列が渡される
+	 * public CpuJankenPlayerImpl(String playerName)
+	 * --確認事項--
+	 * インスタンス生成時に渡された引数がフィールドに代入されているか
+	 * --条件--
+	 *	引数は文字列
+	 * --検証項目--
+	 * 1. インスタンス生成時に渡した文字列とplayerNameフィールドの値が等しいか
 	 */
 	@Test
 	public void testConstructor001() {
 		try {
+			//準備
+			Field playerNameField = CpuJankenPlayerImpl.class.getDeclaredField("playerName");
+			playerNameField.setAccessible(true);
+			
 			//テストメソッド
 			CpuJankenPlayerImpl player = new CpuJankenPlayerImpl(this.playerName);
 
 			//検証
-			Field playerNameField = CpuJankenPlayerImpl.class.getDeclaredField("playerName");
-			playerNameField.setAccessible(true);
 			String result = String.valueOf(playerNameField.get(player));
-
 			assertEquals(this.playerName, result);
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
 	}
 
 	/**
-	 * testConstructor002 異常系
-	 * CpuJankenPlayerImpl(String playerName)
-	 * nullが渡される
+	 * testConstructor002 正常系
+	 * public CpuJankenPlayerImpl(String playerName)
+	 * --確認事項--
+	 * インスタンス生成時に渡された引数がフィールドに代入されているか
+	 * --条件--
+	 *	引数はnull
+	 * --検証項目--
+	 * 1. playerNameフィールドの値がnullであるか
 	 */
 	@Test
 	public void testConstructor002() {
 		try {
+			//準備
+			Field playerNameField = CpuJankenPlayerImpl.class.getDeclaredField("playerName");
+			playerNameField.setAccessible(true);
+			
 			//テストメソッド
 			CpuJankenPlayerImpl player = new CpuJankenPlayerImpl(this.nullPlayerName);
 
 			//検証
-			Field playerNameField = CpuJankenPlayerImpl.class.getDeclaredField("playerName");
-			playerNameField.setAccessible(true);
 			String result = (String) playerNameField.get(player);
-
 			assertNull(result);
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -90,12 +101,18 @@ public class CpuJankenPlayerImplTest {
 
 	/**
 	 * testGetPlayerName001 正常系
-	 * String getPlayerName()
-	 * playerNameフィールドに普通の文字列が代入されている
+	 * public String getPlayerName()
+	 * --確認事項--
+	 * playerNameフィールドの値が返されるか
+	 * --条件--
+	 *	playerNameフィールドの値は文字列
+	 * --検証項目--
+	 * 1. 戻り値とplayerNameフィールドの値が等しいか
 	 */
 	@Test
 	public void testGetPlayerName001() {
 		try {
+			//準備
 			Field playerNameField = CpuJankenPlayerImpl.class.getDeclaredField("playerName");
 			playerNameField.setAccessible(true);
 			playerNameField.set(this.player, this.playerName);
@@ -106,20 +123,26 @@ public class CpuJankenPlayerImplTest {
 			//検証
 			assertEquals(this.playerName, result);
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
 	}
 
 	/**
-	 * testGetPlayerName002 異常系
-	 * String getPlayerName()
-	 * playerNameフィールドに普通の文字列が代入されていない
+	 * testGetPlayerName002 正常系
+	 * public String getPlayerName()
+	 * --確認事項--
+	 * playerNameフィールドの値が返されるか
+	 * --条件--
+	 *	playerNameフィールドの値はnull
+	 * --検証項目--
+	 * 1. 戻り値はnullであるか
 	 */
 	@Test
 	public void testGetPlayerName002() {
 		try {
+			//準備
 			Field playerNameField = CpuJankenPlayerImpl.class.getDeclaredField("playerName");
 			playerNameField.setAccessible(true);
 			playerNameField.set(this.player, this.nullPlayerName);
@@ -130,7 +153,7 @@ public class CpuJankenPlayerImplTest {
 			//検証
 			assertNull(result);
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -138,12 +161,18 @@ public class CpuJankenPlayerImplTest {
 
 	/**
 	 * testGetJankenHand001 正常系
-	 * int getJankenHand()
-	 * playerHandフィールドに値が代入されている
+	 * public int getJankenHand()
+	 * --確認事項--
+	 * playerHandフィールドの値が返されるか
+	 * --条件--
+	 *	playerHandフィールドの値は整数
+	 * --検証項目--
+	 * 1. 戻り値とplayerHandフィールドの値は等しいか
 	 */
 	@Test
 	public void testGetJankenHand001() {
 		try {
+			//準備
 			Field playerHandField = CpuJankenPlayerImpl.class.getDeclaredField("playerHand");
 			playerHandField.setAccessible(true);
 			playerHandField.set(this.player, this.playerHand);
@@ -154,16 +183,21 @@ public class CpuJankenPlayerImplTest {
 			//検証
 			assertEquals(result, this.playerHand);
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException  e) {
+		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
 	}
 
 	/**
-	 * testGetJankenHand001 異常系
-	 * int getJankenHand()
-	 * playerHandフィールドに値が代入されていない
+	 * testGetJankenHand002 正常系
+	 * public int getJankenHand()
+	 * --確認事項--
+	 * playerHandフィールドの値が返されるか
+	 * --条件--
+	 *	playerHandフィールドの値をセットしない
+	 * --検証項目--
+	 * 1. 戻り値は0であるか
 	 */
 	@Test
 	public void testGetJankenHand002() {
@@ -175,28 +209,41 @@ public class CpuJankenPlayerImplTest {
 		assertEquals(result, this.notSetting);
 	}
 
+
 	/**
 	 * testSelectJankenHand001 正常系
-	 * void selectJankenHand() throws SystemException
-	 * playerHandフィールドにグーの値を代入する
+	 * public void selectJankenHand() throws SystemException
+	 * --確認事項--
+	 * playerHandフィールドに列挙型の定数が代入される
+	 * --条件--
+	 * 生成されるRandomインスタンスはnextIntが0を返すmock
+	 * --検証項目--
+	 * 1. playerHandフィールドの値はJankenParamのROCKの値であるか
+	 * 2. Randomインスタンスは一個生成されるか
+	 * 3. netxIntは1回だけ呼び出されるか
 	 */
 	@Test
 	public void testSelectJankenHand001() {
 		//モック化
-		try (MockedConstruction<Random> mockRandom = mockConstruction(Random.class, (random, context) -> when(random.nextInt(this.to)).thenReturn(this.rock-1))){
+		try (MockedConstruction<Random> mockRandom = mockConstruction(
+				Random.class, 
+				(random, context) -> when(random.nextInt(this.to)).thenReturn(this.rock-1)
+			)
+		){
+			//準備
+			Field playerHandField = CpuJankenPlayerImpl.class.getDeclaredField("playerHand");
+			playerHandField.setAccessible(true);
+			
 			//テストメソッド
 			this.player.selectJankenHand();
 
 			//検証
-			Field playerHandField = CpuJankenPlayerImpl.class.getDeclaredField("playerHand");
-			playerHandField.setAccessible(true);
 			int playerHand = (Integer) playerHandField.get(this.player);
-
 			assertEquals(playerHand, this.rock);
 			assertEquals(mockRandom.constructed().size(), 1);
 			verify(mockRandom.constructed().get(0), times(1)).nextInt(this.to);
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException | SystemException | ApplicationException e) {
+		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -204,26 +251,38 @@ public class CpuJankenPlayerImplTest {
 
 	/**
 	 * testSelectJankenHand002 正常系
-	 * void selectJankenHand() throws SystemException
-	 * playerHandフィールドにチョキの値を代入する
+	 * public void selectJankenHand() throws SystemException
+	 * --確認事項--
+	 * playerHandフィールドに列挙型の定数が代入される
+	 * --条件--
+	 * 生成されるRandomインスタンスはnextIntが1を返すmock
+	 * --検証項目--
+	 * 1. playerHandフィールドの値はJankenParamのSCISSORSの値であるか
+	 * 2. Randomインスタンスは一個生成されるか
+	 * 3. netxIntは1回だけ呼び出されるか
 	 */
 	@Test
 	public void testSelectJankenHand002() {
 		//モック化
-		try (MockedConstruction<Random> mockRandom = mockConstruction(Random.class, (random, context) -> when(random.nextInt(this.to)).thenReturn(this.scissors-1))){
+		try (MockedConstruction<Random> mockRandom = mockConstruction(
+				Random.class, 
+				(random, context) -> when(random.nextInt(this.to)).thenReturn(this.scissors-1)
+			)
+		){
+			//準備
+			Field playerHandField = CpuJankenPlayerImpl.class.getDeclaredField("playerHand");
+			playerHandField.setAccessible(true);
+			
 			//テストメソッド
 			this.player.selectJankenHand();
 
 			//検証
-			Field playerHandField = CpuJankenPlayerImpl.class.getDeclaredField("playerHand");
-			playerHandField.setAccessible(true);
 			int playerHand = (Integer) playerHandField.get(this.player);
-
 			assertEquals(playerHand, this.scissors);
 			assertEquals(mockRandom.constructed().size(), 1);
 			verify(mockRandom.constructed().get(0), times(1)).nextInt(this.to);
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException | SystemException | ApplicationException e) {
+		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -231,26 +290,38 @@ public class CpuJankenPlayerImplTest {
 
 	/**
 	 * testSelectJankenHand003 正常系
-	 * void selectJankenHand() throws SystemException
-	 * playerHandフィールドにパーの値を代入する
+	 * public void selectJankenHand() throws SystemException
+	 * --確認事項--
+	 * playerHandフィールドに列挙型の定数が代入される
+	 * --条件--
+	 * 生成されるRandomインスタンスはnextIntが2を返すmock
+	 * --検証項目--
+	 * 1. playerHandフィールドの値はJankenParamのPAPERの値であるか
+	 * 2. Randomインスタンスは一個生成されるか
+	 * 3. netxIntは1回だけ呼び出されるか
 	 */
 	@Test
 	public void testSelectJankenHand003() {
 		//モック化
-		try (MockedConstruction<Random> mockRandom = mockConstruction(Random.class, (random, context) -> when(random.nextInt(this.to)).thenReturn(this.paper-1))){
+		try (MockedConstruction<Random> mockRandom = mockConstruction(
+				Random.class, 
+				(random, context) -> when(random.nextInt(this.to)).thenReturn(this.paper-1)
+			)
+		){
+			//準備
+			Field playerHandField = CpuJankenPlayerImpl.class.getDeclaredField("playerHand");
+			playerHandField.setAccessible(true);
+			
 			//テストメソッド
 			this.player.selectJankenHand();
 
 			//検証
-			Field playerHandField = CpuJankenPlayerImpl.class.getDeclaredField("playerHand");
-			playerHandField.setAccessible(true);
 			int playerHand = (Integer) playerHandField.get(this.player);
-
 			assertEquals(playerHand, this.paper);
 			assertEquals(mockRandom.constructed().size(), 1);
 			verify(mockRandom.constructed().get(0), times(1)).nextInt(this.to);
 
-		}catch(NoSuchFieldException | SecurityException | NullPointerException| IllegalArgumentException | IllegalAccessException | SystemException | ApplicationException e) {
+		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -258,15 +329,25 @@ public class CpuJankenPlayerImplTest {
 
 	/**
 	 * testSelectJankenHand004 異常系
-	 * void selectJankenHand() throws SystemException
-	 * KeybordのgetIntから不正な値が返され、JankenParamのgetEnumに渡されたときNullPointerExceptionが発生する
+	 * public void selectJankenHand() throws SystemException
+	 * --確認事項--
+	 * RandomクラスのnextIntで範囲外の整数がJankenParamのgetEnumに渡される場合、NullPointerExceptionが発生する
+	 * --条件--
+	 * 生成されるRandomインスタンスはnextIntが-2を返すmock
+	 * --検証項目--
+	 * 1. NullPointerExceptionがスローされるか
+	 * 2. Randomインスタンスは一個生成されるか
+	 * 3. netxIntは1回だけ呼び出されるか
 	 */
 	@Test
 	public void testSelectJankenHand004() {
 		//モック化
-		try (MockedConstruction<Random> mockRandom = mockConstruction(Random.class, (random, context) -> when(random.nextInt(this.to)).thenReturn(this.illegalValue-1))){
-
-			//テストメソッド 検証
+		try (MockedConstruction<Random> mockRandom = mockConstruction(
+				Random.class, 
+				(random, context) -> when(random.nextInt(this.to)).thenReturn(this.illegalValue-1)
+			)
+		){
+			//テストメソッド 、検証
 			assertThrows(NullPointerException.class, () -> this.player.selectJankenHand());
 			assertEquals(mockRandom.constructed().size(), 1);
 			verify(mockRandom.constructed().get(0), times(1)).nextInt(this.to);
@@ -275,14 +356,26 @@ public class CpuJankenPlayerImplTest {
 
 	/**
 	 * testSelectJankenHand005 異常系
-	 * void selectJankenHand() throws SystemException
-	 * KeybordのgetIntから不正な値が返されかつ0であった場合、JankenParamのgetEnumに渡されたらDRAWが返されdefaultに処理が移る
+	 * public void selectJankenHand() throws SystemException
+	 * --確認事項--
+	 * RandomクラスのnextIntで範囲外の-1がJankenParamのgetEnumに渡される場合、SystemExceptionが発生する
+	 * --条件--
+	 * 生成されるRandomインスタンスはnextIntが-1を返すmock
+	 * --検証項目--
+	 * 1. SystemExceptionがスローされるか
+	 * 2. メッセージ「パラメーターの値が不正です。」が含まれているか
+	 * 3. Randomインスタンスは一個生成されるか
+	 * 4. netxIntは1回だけ呼び出されるか
 	 */
 	@Test
 	public void testSelectJankenHand005() {
 		//モック化
-		try (MockedConstruction<Random> mockRandom = mockConstruction(Random.class, (random, context) -> when(random.nextInt(this.to)).thenReturn(this.zeroValue-1))){
-			//テストメソッド 検証
+		try (MockedConstruction<Random> mockRandom = mockConstruction(
+				Random.class, 
+				(random, context) -> when(random.nextInt(this.to)).thenReturn(this.zeroValue-1)
+			)
+		){
+			//テストメソッド、検証
 			SystemException e = assertThrows(SystemException.class, () -> this.player.selectJankenHand());
 			assertEquals(this.errorMessage, e.getSysMsg());
 			assertEquals(mockRandom.constructed().size(), 1);
