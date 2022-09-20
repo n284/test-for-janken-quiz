@@ -2,6 +2,7 @@ package jp.co.ginga.cui.impl.janken;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
@@ -34,7 +35,6 @@ import jp.co.ginga.util.keybord.Keybord;
 public class JankenCuiGameApplicationImplTest{
 
 	//テストデータ
-	private int multi = 2;
 	private int none = 0;
 	private int two = 2;
 	private int one = 1;
@@ -61,10 +61,17 @@ public class JankenCuiGameApplicationImplTest{
 	@InjectMocks
 	private JankenCuiGameApplicationImpl jankenCuiGameApplicationImpl = new JankenCuiGameApplicationImpl();
 
+
 	/**
 	 * testInit001 正常系
-	 * void init()
-	 * playerListに何も代入されていない場合、ArrayList<JankenPlayer>のインスタンスを代入する
+	 * private void init()
+	 * --確認事項--
+	 * playerListがnullの場合、ArrayList<JankenPlayer>のインスタンスを代入する
+	 * --条件--
+	 *	playerListフィールドの値がnull
+	 * --検証項目--
+	 * 1. playerListフィールドの値がArrayList<JankenPlayer>のインスタンスであるか
+	 * 2. playerListフィールドのサイズが0であるか
 	 */
 	@Test
 	public void testInit001() {
@@ -74,10 +81,10 @@ public class JankenCuiGameApplicationImplTest{
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
 			playerListField.setAccessible(true);
-			
+
 			//テストメソッド
 			method.invoke(this.jankenCuiGameApplicationImpl);
-			
+
 			//検証
 			@SuppressWarnings("unchecked")
 			List<JankenPlayer> playerList =(List<JankenPlayer>) playerListField.get(this.jankenCuiGameApplicationImpl);
@@ -90,10 +97,17 @@ public class JankenCuiGameApplicationImplTest{
 		}
 	}
 
+
 	/**
 	 * testInit002 正常系
-	 * void init()
-	 * playerListにArrayList<JankenPlayer>のインスタンスが代入され要素が追加されている場合、要素を削除する
+	 * private void init()
+	 * --確認事項--
+	 * playerListがnullでない場合、リストの要素を空にする
+	 * --条件--
+	 *	playerListフィールドの値がJankenPlayerインスタンスが追加されたリスト
+	 * --検証項目--
+	 * 1. playerListフィールドの値がnullでない
+	 * 2. playerListフィールドのサイズが0であるか
 	 */
 	@Test
 	public void testInit002() {
@@ -111,7 +125,7 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			@SuppressWarnings("unchecked")
 			List<JankenPlayer> playerList =(List<JankenPlayer>) playerListField.get(this.jankenCuiGameApplicationImpl);
-			assertEquals(playerList, this.emptyPlayerList);
+			assertNotNull(playerList);
 			assertEquals(playerList.size(), 0);
 
 		}catch(Exception e) {
@@ -122,15 +136,23 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testCreateHumanOfJankenPlayer001 正常系
-	 * void createHumanOfJankenPlayer() throws SystemException
-	 * playerListに複数のhumanJankenPlayerImplインスタンスを代入する
+	 * private void createHumanOfJankenPlayer() throws SystemException
+	 * --確認事項--
+	 * 入力した数分のHumanPlayerインスタンスを生成してplayerListフィールドに追加する
+	 * --条件--
+	 * KeybordクラスのgetIntでは2を返すmock
+	 *	playerListフィールドの値は空のリスト
+	 * --検証項目--
+	 * 1. playerListフィールドに2個のHumanPlayerインスタンスが追加されているか
+	 * 2. それぞれ追加されたインスタンスが持つデータが指定した値であるか
+	 * 3. getIntメソッドは1回だけ呼び出されているか
 	 */
 	@Test
 	public void testCreateHumanOfJankenPlayer001() {
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
-			mockKeybord.when(() -> Keybord.getInt()).thenReturn(this.multi);
-			
+			mockKeybord.when(() -> Keybord.getInt()).thenReturn(this.two);
+
 			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("createHumanOfJankenPlayer");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
@@ -144,11 +166,11 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			@SuppressWarnings("unchecked")
 			List<JankenPlayer> playerList =(List<JankenPlayer>) playerListField.get(this.jankenCuiGameApplicationImpl);
-			assertEquals(playerList.size(), this.multi);
+			assertEquals(playerList.size(), this.two);
 			assertEquals(playerList.get(0).getPlayerName(), this.humanPlayer1.getPlayerName());
 			assertEquals(playerList.get(1).getPlayerName(), this.humanPlayer2.getPlayerName());
 			mockKeybord.verify(() -> Keybord.getInt(), times(1));
-			
+
 		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
@@ -157,15 +179,22 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testCreateHumanOfJankenPlayer002 正常系
-	 * void createHumanOfJankenPlayer() throws SystemException
-	 * playerListに0個のhumanJankenPlayerImplインスタンスを代入する
+	 * private void createHumanOfJankenPlayer() throws SystemException
+	 * --確認事項--
+	 * 入力した数分のHumanPlayerインスタンスを生成してplayerListフィールドに追加する
+	 * --条件--
+	 * KeybordクラスのgetIntでは0を返すmock
+	 *	playerListフィールドの値は空のリスト
+	 * --検証項目--
+	 * 1. playerListフィールドに0個のHumanPlayerインスタンスが追加されているか
+	 * 2. getIntメソッドは1回だけ呼び出されているか
 	 */
 	@Test
 	public void testCreateHumanOfJankenPlayer002() {
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt()).thenReturn(this.none);
-			
+
 			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("createHumanOfJankenPlayer");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
@@ -181,7 +210,7 @@ public class JankenCuiGameApplicationImplTest{
 			List<JankenPlayer> playerList =(List<JankenPlayer>) playerListField.get(this.jankenCuiGameApplicationImpl);
 			assertEquals(playerList.size(), this.none);
 			mockKeybord.verify(() -> Keybord.getInt(), times(1));
-			
+
 		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
@@ -190,15 +219,23 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testCreateHumanOfJankenPlayer003 正常系
-	 * void createHumanOfJankenPlayer() throws SystemException
-	 * KeybordのgetInt()から一度ApplicationExceptionを発生し、２度目に正常な値を入力する
+	 * private void createHumanOfJankenPlayer() throws SystemException
+	 * --確認事項--
+	 * 不正な値を入力したら再度入力が求められ入力した数分のHumanPlayerインスタンスを生成してplayerListフィールドに追加する
+	 * --条件--
+	 * KeybordクラスのgetIntでは一回目はApplicationExceptionが発生し、二回目に2を返すmock
+	 *	playerListフィールドの値は空のリスト
+	 * --検証項目--
+	 * 1. playerListフィールドに2個のHumanPlayerインスタンスが追加されているか
+	 * 2. それぞれ追加されたインスタンスが持つデータが指定した値であるか
+	 * 3. getIntメソッドは2回だけ呼び出されているか
 	 */
 	@Test
 	public void testCreateHumanOfJankenPlayer003() {
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
-			mockKeybord.when(() -> Keybord.getInt()).thenThrow(new ApplicationException(null)).thenReturn(this.multi);
-			
+			mockKeybord.when(() -> Keybord.getInt()).thenThrow(new ApplicationException(null)).thenReturn(this.two);
+
 			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("createHumanOfJankenPlayer");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
@@ -212,11 +249,11 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			@SuppressWarnings("unchecked")
 			List<JankenPlayer> playerList =(List<JankenPlayer>) playerListField.get(this.jankenCuiGameApplicationImpl);
-			assertEquals(playerList.size(), this.multi);
+			assertEquals(playerList.size(), this.two);
 			assertEquals(playerList.get(0).getPlayerName(), this.humanPlayer1.getPlayerName());
 			assertEquals(playerList.get(1).getPlayerName(), this.humanPlayer2.getPlayerName());
 			mockKeybord.verify(() -> Keybord.getInt(), times(2));
-			
+
 		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
@@ -225,22 +262,29 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testCreateHumanOfJankenPlayer004 異常系
-	 * void createHumanOfJankenPlayer() throws SystemException
-	 * playerListにnullが代入されている
+	 * private void createHumanOfJankenPlayer() throws SystemException
+	 * --確認事項--
+	 * playerListフィールドにnullが代入されている場合、NullPointerExceptionが発生する
+	 * --条件--
+	 * KeybordクラスのgetIntでは2を返すmock
+	 *	playerListフィールドの値はnull
+	 * --検証項目--
+	 * 1. NullPointerExceptionが発生するか
+	 * 2. getIntメソッドは1回だけ呼び出されているか
 	 */
 	@Test
 	public void testCreateHumanOfJankenPlayer004() {
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
-			mockKeybord.when(() -> Keybord.getInt()).thenReturn(this.multi);
-			
+			mockKeybord.when(() -> Keybord.getInt()).thenReturn(this.two);
+
 			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("createHumanOfJankenPlayer");
 			method.setAccessible(true);
 
 			//テストメソッド
 			InvocationTargetException e = assertThrows(InvocationTargetException.class, () -> method.invoke(this.jankenCuiGameApplicationImpl));
-			
+
 			//検証
 			assertEquals(NullPointerException.class , e.getTargetException().getClass());
 			mockKeybord.verify(() -> Keybord.getInt(), times(1));
@@ -252,15 +296,23 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testCreateCpuOfJankenPlayer001 正常系
-	 * void createCpuOfJankenPlayer() throws SystemException
-	 * playerListに複数のcpuJankenPlayerImplインスタンスを代入する
+	 * private void createCpuOfJankenPlayer() throws SystemException
+	 * --確認事項--
+	 * 入力した数分のCpuPlayerインスタンスを生成してplayerListフィールドに追加する
+	 * --条件--
+	 * KeybordクラスのgetIntでは2を返すmock
+	 *	playerListフィールドの値は空のリスト
+	 * --検証項目--
+	 * 1. playerListフィールドに2個のCpuPlayerインスタンスが追加されているか
+	 * 2. それぞれ追加されたインスタンスが持つデータが指定した値であるか
+	 * 3. getIntメソッドは1回だけ呼び出されているか
 	 */
 	@Test
 	public void testCreateCpuOfJankenPlayer001() {
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
-			mockKeybord.when(() -> Keybord.getInt()).thenReturn(this.multi);
-			
+			mockKeybord.when(() -> Keybord.getInt()).thenReturn(this.two);
+
 			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("createCpuOfJankenPlayer");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
@@ -274,11 +326,11 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			@SuppressWarnings("unchecked")
 			List<JankenPlayer> playerList =(List<JankenPlayer>) playerListField.get(this.jankenCuiGameApplicationImpl);
-			assertEquals(playerList.size(), this.multi);
+			assertEquals(playerList.size(), this.two);
 			assertEquals(playerList.get(0).getPlayerName(), this.cpuPlayer1.getPlayerName());
 			assertEquals(playerList.get(1).getPlayerName(), this.cpuPlayer2.getPlayerName());
 			mockKeybord.verify(() -> Keybord.getInt(), times(1));
-			
+
 		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
@@ -287,15 +339,22 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testCreateCpuOfJankenPlayer002 正常系
-	 * void createCpuOfJankenPlayer() throws SystemException
-	 * playerListに0個のCpuJankenPlayerImplインスタンスを代入する
+	 * private void createCpuOfJankenPlayer() throws SystemException
+	 * --確認事項--
+	 * 入力した数分のHumanPlayerインスタンスを生成してplayerListフィールドに追加する
+	 * --条件--
+	 * KeybordクラスのgetIntでは0を返すmock
+	 *	playerListフィールドの値は空のリスト
+	 * --検証項目--
+	 * 1. playerListフィールドに0個のHumanPlayerインスタンスが追加されているか
+	 * 2. getIntメソッドは1回だけ呼び出されているか
 	 */
 	@Test
 	public void testCreateCpuOfJankenPlayer002() {
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt()).thenReturn(this.none);
-			
+
 			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("createCpuOfJankenPlayer");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
@@ -311,7 +370,7 @@ public class JankenCuiGameApplicationImplTest{
 			List<JankenPlayer> playerList =(List<JankenPlayer>) playerListField.get(this.jankenCuiGameApplicationImpl);
 			assertEquals(playerList.size(), this.none);
 			mockKeybord.verify(() -> Keybord.getInt(), times(1));
-			
+
 		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
@@ -320,15 +379,23 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testCreateCpuOfJankenPlayer003 正常系
-	 * void createCpuOfJankenPlayer() throws SystemException
-	 * KeybordのgetInt()から一度ApplicationExceptionを発生し、２度目に正常な値を入力する
+	 * private void createCpuOfJankenPlayer() throws SystemException
+	 * --確認事項--
+	 * 不正な値を入力したら再度入力が求められ入力した数分のCpuPlayerインスタンスを生成してplayerListフィールドに追加する
+	 * --条件--
+	 * KeybordクラスのgetIntでは一回目はApplicationExceptionが発生し、二回目に2を返すmock
+	 *	playerListフィールドの値は空のリスト
+	 * --検証項目--
+	 * 1. playerListフィールドに2個のCpuPlayerインスタンスが追加されているか
+	 * 2. それぞれ追加されたインスタンスが持つデータが指定した値であるか
+	 * 3. getIntメソッドは2回だけ呼び出されているか
 	 */
 	@Test
 	public void testCreateCpuOfJankenPlayer003() {
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
-			mockKeybord.when(() -> Keybord.getInt()).thenThrow(new ApplicationException(null)).thenReturn(this.multi);
-			
+			mockKeybord.when(() -> Keybord.getInt()).thenThrow(new ApplicationException(null)).thenReturn(this.two);
+
 			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("createCpuOfJankenPlayer");
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
@@ -342,11 +409,11 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			@SuppressWarnings("unchecked")
 			List<JankenPlayer> playerList =(List<JankenPlayer>) playerListField.get(this.jankenCuiGameApplicationImpl);
-			assertEquals(playerList.size(), this.multi);
+			assertEquals(playerList.size(), this.two);
 			assertEquals(playerList.get(0).getPlayerName(), this.cpuPlayer1.getPlayerName());
 			assertEquals(playerList.get(1).getPlayerName(), this.cpuPlayer2.getPlayerName());
 			mockKeybord.verify(() -> Keybord.getInt(), times(2));
-			
+
 		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
@@ -355,15 +422,22 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testCreateCpuOfJankenPlayer004 異常系
-	 * void createCpuOfJankenPlayer() throws SystemException
-	 * playerListにnullが代入されている
+	 * private void createCpuOfJankenPlayer() throws SystemException
+	 * --確認事項--
+	 * playerListフィールドにnullが代入されている場合、NullPointerExceptionが発生する
+	 * --条件--
+	 * KeybordクラスのgetIntでは2を返すmock
+	 *	playerListフィールドの値はnull
+	 * --検証項目--
+	 * 1. NullPointerExceptionが発生するか
+	 * 2. getIntメソッドは1回だけ呼び出されているか
 	 */
 	@Test
 	public void testCreateCpuOfJankenPlayer004() {
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
-			mockKeybord.when(() -> Keybord.getInt()).thenReturn(this.multi);
-			
+			mockKeybord.when(() -> Keybord.getInt()).thenReturn(this.two);
+
 			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("createCpuOfJankenPlayer");
 			method.setAccessible(true);
@@ -373,20 +447,22 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			assertEquals(NullPointerException.class , e.getTargetException().getClass());
 			mockKeybord.verify(() -> Keybord.getInt(), times(1));
-			
+
 		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
 		}
 	}
 
-
-
-
 	/**
 	 * testSelectJankenHand001 正常系
-	 * void selectJankenHand() throws SystemException
-	 * playerListの長さが2以上
+	 * private void selectJankenHand() throws SystemException
+	 * --確認事項--
+	 * playerListフィールドに追加されている各々のプレイヤーインスタンスからselectJankenHandメソッドを呼び出す
+	 * --条件--
+	 * playerListフィールドにはmock化されたhumanPlayerとcpuPlayerの2個が追加されている
+	 * --検証項目--
+	 * 1. それぞれのプレイヤーインスタンスからselectJankenHandメソッドを1回ずつ呼び出されているか
 	 */
 	@Test
 	public void testSelectJankenHand001() {
@@ -420,8 +496,13 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testSelectJankenHand002 異常系
-	 * void selectJankenHand() throws SystemException
-	 * playerListの長さが0
+	 * private void selectJankenHand() throws SystemException
+	 * --確認事項--
+	 * playerListフィールドに追加されている各々のプレイヤーインスタンスからselectJankenHandメソッドを呼び出す
+	 * --条件--
+	 * playerListフィールドには何も追加されていない
+	 * --検証項目--
+	 * 1. playerListフィールドから一度も要素が取り出されていないか
 	 */
 	@Test
 	public void testSelectJankenHand002() {
@@ -451,8 +532,13 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testSelectJankenHand003 異常系
-	 * void selectJankenHand() throws SystemException
-	 * playerListがnull
+	 * private void selectJankenHand() throws SystemException
+	 * --確認事項--
+	 * playerListフィールドにnullが代入されている場合、NullPointerExceptionが発生する
+	 * --条件--
+	 * playerListフィールドはnull
+	 * --検証項目--
+	 * 1. NullPointerExceptionが発生すること
 	 */
 	@Test
 	public void testSelectJankenHand003() {
@@ -478,8 +564,14 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testJudge001 正常系
-	 * int judge() throws SystemException
-	 * CPU:グー、プレイヤー:チョキ
+	 * private int judge() throws SystemException
+	 * --確認事項--
+	 * プレイヤーから手を取り出し、フラグを切り替えて勝ちの手を返す
+	 * --条件--
+	 * playerListフィールドにグーを出したCpuプレイヤー、チョキを出したhumanプレイヤーが追加されている
+	 * --検証項目--
+	 * 1. 戻り値がROCKに対応する定数と等しいか
+	 * 2. プレイヤーインスタンスからgetJankenHandメソッドがそれぞれ1回呼び出されているか
 	 */
 	@Test
 	public void testJudge001() {
@@ -489,7 +581,7 @@ public class JankenCuiGameApplicationImplTest{
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
 			playerListField.setAccessible(true);
-			
+
 			//モック化
 			JankenPlayer humanPlayer = mock(HumanJankenPlayerImpl.class);
 			JankenPlayer cpuPlayer = mock(CpuJankenPlayerImpl.class);
@@ -513,9 +605,15 @@ public class JankenCuiGameApplicationImplTest{
 	}
 
 	/**
-	 * testJudge001 正常系
-	 * int judge() throws SystemException
-	 * CPU:グー、プレイヤー:パー
+	 * testJudge002 正常系
+	 * private int judge() throws SystemException
+	 * --確認事項--
+	 * プレイヤーから手を取り出し、フラグを切り替えて勝ちの手を返す
+	 * --条件--
+	 * playerListフィールドにグーを出したCpuプレイヤー、パーを出したhumanプレイヤーが追加されている
+	 * --検証項目--
+	 * 1. 戻り値がPAPERに対応する定数と等しいか
+	 * 2. プレイヤーインスタンスからgetJankenHandメソッドがそれぞれ1回呼び出されているか
 	 */
 	@Test
 	public void testJudge002() {
@@ -525,7 +623,7 @@ public class JankenCuiGameApplicationImplTest{
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
 			playerListField.setAccessible(true);
-			
+
 			//モック化
 			JankenPlayer humanPlayer = mock(HumanJankenPlayerImpl.class);
 			JankenPlayer cpuPlayer = mock(CpuJankenPlayerImpl.class);
@@ -548,10 +646,17 @@ public class JankenCuiGameApplicationImplTest{
 		}
 	}
 
+
 	/**
 	 * testJudge003 正常系
-	 * int judge() throws SystemException
-	 * CPU:チョキ、プレイヤー:パー
+	 * private int judge() throws SystemException
+	 * --確認事項--
+	 * プレイヤーから手を取り出し、フラグを切り替えて勝ちの手を返す
+	 * --条件--
+	 * playerListフィールドにチョキを出したCpuプレイヤー、パーを出したhumanプレイヤーが追加されている
+	 * --検証項目--
+	 * 1. 戻り値がSCISSORSに対応する定数と等しいか
+	 * 2. プレイヤーインスタンスからgetJankenHandメソッドがそれぞれ1回呼び出されているか
 	 */
 	@Test
 	public void testJudge003() {
@@ -561,7 +666,7 @@ public class JankenCuiGameApplicationImplTest{
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
 			playerListField.setAccessible(true);
-			
+
 			//モック化
 			JankenPlayer humanPlayer = mock(HumanJankenPlayerImpl.class);
 			JankenPlayer cpuPlayer = mock(CpuJankenPlayerImpl.class);
@@ -585,9 +690,15 @@ public class JankenCuiGameApplicationImplTest{
 	}
 
 	/**
-	 * testJudge004 正常系
-	 * int judge() throws SystemException
-	 * CPU:グー、プレイヤー:グー
+	 * testJudge002 正常系
+	 * private int judge() throws SystemException
+	 * --確認事項--
+	 * プレイヤーから手を取り出し、フラグを切り替えて勝ちの手を返す
+	 * --条件--
+	 * playerListフィールドにグーを出したCpuプレイヤー、グーを出したhumanプレイヤーが追加されている
+	 * --検証項目--
+	 * 1. 戻り値がDRAWに対応する定数と等しいか
+	 * 2. プレイヤーインスタンスからgetJankenHandメソッドがそれぞれ1回呼び出されているか
 	 */
 	@Test
 	public void testJudge004() {
@@ -597,7 +708,7 @@ public class JankenCuiGameApplicationImplTest{
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
 			playerListField.setAccessible(true);
-			
+
 			//モック化
 			JankenPlayer humanPlayer = mock(HumanJankenPlayerImpl.class);
 			JankenPlayer cpuPlayer = mock(CpuJankenPlayerImpl.class);
@@ -622,8 +733,14 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testJudge005 異常系
-	 * int judge() throws SystemException
-	 * CPU:グー、プレイヤー:異常値
+	 * private int judge() throws SystemException
+	 * --確認事項--
+	 * プレイヤーから手を取り出し、異常値である場合はNullPointerExceptionが発生する
+	 * --条件--
+	 * playerListフィールドにグーを出したCpuプレイヤー、異常値を出したhumanプレイヤーが追加されている
+	 * --検証項目--
+	 * 1. NullPointerExceptionがスローされるか
+	 * 2. humanプレイヤー、Cpuプレイヤーの順番であるため、getJankenHandが１回と０回呼び出されているか
 	 */
 	@Test
 	public void testJudge005() {
@@ -633,7 +750,7 @@ public class JankenCuiGameApplicationImplTest{
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
 			playerListField.setAccessible(true);
-			
+
 			//モック化
 			JankenPlayer humanPlayer = mock(HumanJankenPlayerImpl.class);
 			JankenPlayer cpuPlayer = mock(CpuJankenPlayerImpl.class);
@@ -650,7 +767,7 @@ public class JankenCuiGameApplicationImplTest{
 			verify(humanPlayer, times(1)).getJankenHand();
 			verify(cpuPlayer, times(0)).getJankenHand();
 
-		}catch(NullPointerException| SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException  | ExceptionInInitializerError | NoSuchFieldException e) {
+		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -658,8 +775,15 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testJudge006 異常系
-	 * int judge() throws SystemException
-	 * プレイヤー:異常値(DRAW), CPU:グー
+	 * private int judge() throws SystemException
+	 * --確認事項--
+	 * プレイヤーから手を取り出し、異常値であるDRAWの定数の場合はSystemExceptionが発生する
+	 * --条件--
+	 * playerListフィールドにグーを出したCpuプレイヤー、異常値を出したhumanプレイヤーが追加されている
+	 * --検証項目--
+	 * 1. SystemExceptionがスローされるか
+	 * 2. メッセージ「システムエラーが発生しました。終了します。」が含まれるか (取り出せないため未検証)
+	 * 3. humanプレイヤー、Cpuプレイヤーの順番であるため、getJankenHandが１回と０回呼び出されているか
 	 */
 	@Test
 	public void testJudge006() {
@@ -669,7 +793,7 @@ public class JankenCuiGameApplicationImplTest{
 			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
 			method.setAccessible(true);
 			playerListField.setAccessible(true);
-			
+
 			//モック化
 			JankenPlayer humanPlayer = mock(HumanJankenPlayerImpl.class);
 			JankenPlayer cpuPlayer = mock(CpuJankenPlayerImpl.class);
@@ -695,7 +819,14 @@ public class JankenCuiGameApplicationImplTest{
 	/**
 	 * testViewWinner001 正常系
 	 * private void viewWinner() throws SystemException
-	 * プレイヤー:グー, CPU:チョキ
+	 * --確認事項--
+	 * winnHandフィールドと同じ値をもつプレイヤーのplayerNameフィールドの値をを出力する
+	 * --条件--
+	 * playerListフィールドにグーを出したhumanプレイヤーのモック、チョキを出したcpuプレイヤーのモックが追加されている
+	 * winHandフィールドの値をROCKに対応する定数
+	 * --検証項目--
+	 * 1. getJankenHandメソッドが各々1回呼び出されているか
+	 * 2. humanプレイヤーのgetPlayerNameメソッドが1回、cpuプレイヤーのgetPlayerNameメソッドは0回呼び出されているか
 	 */
 	@Test
 	public void testViewWinner001() {
@@ -707,7 +838,7 @@ public class JankenCuiGameApplicationImplTest{
 			method.setAccessible(true);
 			playerListField.setAccessible(true);
 			winHandField.setAccessible(true);
-			
+
 			//モック化
 			JankenPlayer humanPlayer = mock(HumanJankenPlayerImpl.class);
 			JankenPlayer cpuPlayer = mock(CpuJankenPlayerImpl.class);
@@ -735,52 +866,14 @@ public class JankenCuiGameApplicationImplTest{
 	}
 
 	/**
-	 * testViewWinner002 異常系
-	 * private void viewWinner() throws SystemException
-	 * プレイヤー:グー, CPU:グー
-	 * 引き分けなのに実行された場合
-	 */
-	@Test
-	public void testViewWinner002() {
-		try{
-			//準備
-			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("viewWinner");
-			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
-			Field winHandField = JankenCuiGameApplicationImpl.class.getDeclaredField("winHand");
-			method.setAccessible(true);
-			playerListField.setAccessible(true);
-			winHandField.setAccessible(true);
-			
-			//モック化
-			JankenPlayer humanPlayer = mock(HumanJankenPlayerImpl.class);
-			JankenPlayer cpuPlayer = mock(CpuJankenPlayerImpl.class);
-			when(humanPlayer.getJankenHand()).thenReturn(this.rock);
-			when(cpuPlayer.getJankenHand()).thenReturn(this.rock);
-			when(humanPlayer.getPlayerName()).thenReturn(this.playerName1);
-			when(cpuPlayer.getPlayerName()).thenReturn(this.cpuName1);
-			List<JankenPlayer> playerList = new ArrayList<JankenPlayer>(Arrays.asList(humanPlayer, cpuPlayer));
-			playerListField.set(this.jankenCuiGameApplicationImpl, playerList);
-			winHandField.set(this.jankenCuiGameApplicationImpl, this.scissors);
-
-			//テストメソッド
-			method.invoke(this.jankenCuiGameApplicationImpl);
-
-			//検証
-			verify(humanPlayer, times(1)).getJankenHand();
-			verify(cpuPlayer, times(1)).getJankenHand();
-			verify(humanPlayer, times(0)).getPlayerName();
-			verify(cpuPlayer, times(0)).getPlayerName();
-
-		}catch(Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-	}
-
-	/**
 	 * testIsCheckJankenPlayerCount001 正常系
-	 * void isCheckJankenPlayerCount() throws SystemException
-	 * playerListの長さが2以上
+	 * private void isCheckJankenPlayerCount() throws SystemException
+	 * --確認事項--
+	 * playerListフィールドの長さが２以上の場合はtrueを返すか
+	 * --条件--
+	 * playerListフィールドは要素が2個追加されているリスト
+	 * --検証項目--
+	 * 1. 戻り値がtrueであるか
 	 */
 	@Test
 	public void testIsCheckJankenPlayerCount001() {
@@ -806,8 +899,13 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testIsCheckJankenPlayerCount002 正常系
-	 * void isCheckJankenPlayerCount() throws SystemException
-	 * playerListの長さが2未満
+	 * private void isCheckJankenPlayerCount() throws SystemException
+	 * --確認事項--
+	 * playerListフィールドの長さが２未満の場合はfalseを返すか
+	 * --条件--
+	 * playerListフィールドは空のリスト
+	 * --検証項目--
+	 * 1. 戻り値がfalseであるか
 	 */
 	@Test
 	public void testIsCheckJankenPlayerCount002() {
@@ -833,8 +931,13 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testIsCheckJankenPlayerCount003 異常系
-	 * void isCheckJankenPlayerCount() throws SystemException
-	 * playerListがnull
+	 * private void isCheckJankenPlayerCount() throws SystemException
+	 * --確認事項--
+	 * playerListフィールドがnullの場合NullPointerExceptionが発生する
+	 * --条件--
+	 * playerListフィールドはnull
+	 * --検証項目--
+	 * 1. NullPointerExceptionが発生するか
 	 */
 	@Test
 	public void testIsCheckJankenPlayerCount003() {
@@ -860,15 +963,21 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testHasGameContinue001 正常系
-	 * void hasGameContinue() throws SystemException
-	 * 継続を選択
+	 * private void hasGameContinue() throws SystemException
+	 * --確認事項--
+	 * 1を入力するとtrueを返す
+	 * --条件--
+	 * KeybordクラスはgetIntメソッドで1を返すモック
+	 * --検証項目--
+	 * 1. 戻り値がtrueであるか
+	 * 2. getIntメソッドが1回呼び出されているか
 	 */
 	@Test
 	public void testHasGameContinue001() {
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt(this.one, this.two)).thenReturn(this.one);
-			
+
 			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("hasGameContinue");
 			method.setAccessible(true);
@@ -879,7 +988,7 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			assertEquals(result, true);
 			mockKeybord.verify(() -> Keybord.getInt(this.one, this.two), times(1));
-			
+
 		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
@@ -888,15 +997,21 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testHasGameContinue002 正常系
-	 * void hasGameContinue() throws SystemException
-	 * 終了を選択
+	 * private void hasGameContinue() throws SystemException
+	 * --確認事項--
+	 * 2を入力するとfalseを返す
+	 * --条件--
+	 * KeybordクラスはgetIntメソッドで2を返すモック
+	 * --検証項目--
+	 * 1. 戻り値がfalseであるか
+	 * 2. getIntメソッドが1回呼び出されているか
 	 */
 	@Test
 	public void testHasGameContinue002() {
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt(this.one, this.two)).thenReturn(this.two);
-			
+
 			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("hasGameContinue");
 			method.setAccessible(true);
@@ -907,7 +1022,7 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			assertEquals(result, false);
 			mockKeybord.verify(() -> Keybord.getInt(this.one, this.two), times(1));
-			
+
 		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
@@ -916,15 +1031,21 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testHasGameContinue003 正常系
-	 * void hasGameContinue() throws SystemException
-	 * KeybordのgetInt()から一度ApplicationExceptionを発生し二度目に継続を選択
+	 * private void hasGameContinue() throws SystemException
+	 * --確認事項--
+	 * 異常値を入力すると再度入力が求められる
+	 * --条件--
+	 * KeybordクラスはgetIntメソッドで1回目はApplicationExceptionを発生し、2回目は1を返すモック
+	 * --検証項目--
+	 * 1. 戻り値がtrueであるか
+	 * 2. getIntメソッドが2回呼び出されているか
 	 */
 	@Test
 	public void testHasGameContinue003() {
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt(this.one, this.two)).thenThrow(new ApplicationException(null)).thenReturn(this.one);
-			
+
 			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("hasGameContinue");
 			method.setAccessible(true);
@@ -935,7 +1056,7 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			assertEquals(result, true);
 			mockKeybord.verify(() -> Keybord.getInt(this.one, this.two), times(2));
-			
+
 		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
@@ -943,16 +1064,22 @@ public class JankenCuiGameApplicationImplTest{
 	}
 
 	/**
-	 * testHasGameContinue004 正常系
-	 * void hasGameContinue() throws SystemException
-	 * KeybordのgetInt()から1,2以外の値が返る
+	 * testHasGameContinue004 異常系
+	 * private void hasGameContinue() throws SystemException
+	 * --確認事項--
+	 * 範囲外の整数を入力し処理が進んでしまった場合、SystemExceptionを発生させる
+	 * --条件--
+	 * KeybordクラスはgetIntメソッドで異常値を返すモック
+	 * --検証項目--
+	 * 1. SystemExceptionがスローされるか
+	 * 2. getIntメソッドが1回呼び出されているか
 	 */
 	@Test
 	public void testHasGameContinue004() {
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
 			mockKeybord.when(() -> Keybord.getInt(this.one, this.two)).thenReturn(this.illegalValue);
-			
+
 			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("hasGameContinue");
 			method.setAccessible(true);
@@ -963,7 +1090,7 @@ public class JankenCuiGameApplicationImplTest{
 			//検証
 			assertEquals(SystemException.class , e.getTargetException().getClass());
 			mockKeybord.verify(() -> Keybord.getInt(this.one, this.two), times(1));
-			
+
 		}catch(Exception  e) {
 			e.printStackTrace();
 			fail();
@@ -972,8 +1099,14 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testGetPlayerList001 正常系
-	 * List<JankenPlayer> getPlayerList()
-	 * playerListフィールドにArrayList<JankenPlayer>インスタンスが代入され, 要素が追加されている場合
+	 * ppublic List<JankenPlayer> getPlayerList()
+	 * --確認事項--
+	 * playerListフィールドの値を返す
+	 * --条件--
+	 * playerListフィールドにArrayList<JankenPlayer>インスタンスが代入され, 要素が追加されている
+	 * --検証項目--
+	 * 1. 戻り値とplayerListフィールドの値が等しいか
+	 * 2. 追加されている要素のデータは指定した値であるか
 	 */
 	@Test
 	public void testGetPlayerList001() {
@@ -987,7 +1120,9 @@ public class JankenCuiGameApplicationImplTest{
 			List<JankenPlayer> result = this.jankenCuiGameApplicationImpl.getPlayerList();
 
 			//検証
-			assertEquals(this.playerList.size(), result.size());
+			@SuppressWarnings("unchecked")
+			List<JankenPlayer> playerList = (List<JankenPlayer>) playerListField.get(this.jankenCuiGameApplicationImpl);
+			assertEquals(playerList, result);
 			assertEquals(this.humanPlayer1.getPlayerName(), result.get(0).getPlayerName());
 			assertEquals(this.cpuPlayer1.getPlayerName(), result.get(1).getPlayerName());
 
@@ -999,8 +1134,14 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testGetPlayerList002 正常系
-	 * List<JankenPlayer> getPlayerList()
-	 * playerListフィールドにArrayList<JankenPlayer>インスタンスが代入され, 要素が追加されていない場合
+	 * ppublic List<JankenPlayer> getPlayerList()
+	 * --確認事項--
+	 * playerListフィールドの値を返す
+	 * --条件--
+	 * playerListフィールドにArrayList<JankenPlayer>インスタンスが代入され, 要素が追加されていない
+	 * --検証項目--
+	 * 1. 戻り値とplayerListフィールドの値が等しいか
+	 * 2. 追加されている要素のデータは指定した値であるか
 	 */
 	@Test
 	public void testGetPlayerList002() {
@@ -1014,7 +1155,10 @@ public class JankenCuiGameApplicationImplTest{
 			List<JankenPlayer> result = this.jankenCuiGameApplicationImpl.getPlayerList();
 
 			//検証
-			assertEquals(this.emptyPlayerList.size(), result.size());
+			//検証
+			@SuppressWarnings("unchecked")
+			List<JankenPlayer> playerList = (List<JankenPlayer>) playerListField.get(this.jankenCuiGameApplicationImpl);
+			assertEquals(playerList, result);
 
 		}catch(Exception  e) {
 			e.printStackTrace();
@@ -1023,9 +1167,14 @@ public class JankenCuiGameApplicationImplTest{
 	}
 
 	/**
-	 * testGetPlayerList002 正常系
-	 * List<JankenPlayer> getPlayerList()
+	 * testGetPlayerList003 正常系
+	 * ppublic List<JankenPlayer> getPlayerList()
+	 * --確認事項--
+	 * playerListフィールドの値を返す
+	 * --条件--
 	 * playerListフィールドにnullが代入されている場合
+	 * --検証項目--
+	 * 1. 戻り値がnullであるか
 	 */
 	@Test
 	public void testGetPlayerList003() {
@@ -1049,8 +1198,15 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testSetPlayerList001 正常系
-	 * void setPlayerList(List<JankenPlayer> playerList)
-	 * 引数playerListに要素が追加されているArrayList<JankenPlayer>インスタンスを渡す
+	 * ppublic void setPlayerList(List<JankenPlayer> playerList)
+	 * --確認事項--
+	 * playerListフィールドに値を代入する
+	 * --条件--
+	 * playerListフィールドの値はnull
+	 * 引数に要素が追加されているArrayList<JankenPlayer>インスタンスを渡す
+	 * --検証項目--
+	 * 1. playerListフィールドの値と引数の値が等しいか
+	 * 2. 追加されている要素のデータは指定した値であるか
 	 */
 	@Test
 	public void testSetPlayerList001() {
@@ -1077,8 +1233,14 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testSetPlayerList002 正常系
-	 * void setPlayerList(List<JankenPlayer> playerList)
-	 * 引数playerListに要素が追加されていないArrayList<JankenPlayer>インスタンスを渡す
+	 * ppublic void setPlayerList(List<JankenPlayer> playerList)
+	 * --確認事項--
+	 * playerListフィールドに値を代入する
+	 * --条件--
+	 * playerListフィールドの値はnull
+	 * 引数に要素が追加されていないArrayList<JankenPlayer>インスタンスを渡す
+	 * --検証項目--
+	 * 1. playerListフィールドの値と引数の値が等しいか
 	 */
 	@Test
 	public void testSetPlayerList002() {
@@ -1102,9 +1264,15 @@ public class JankenCuiGameApplicationImplTest{
 	}
 
 	/**
-	 * testSetPlayerList002 異常系
-	 * void setPlayerList(List<JankenPlayer> playerList)
-	 * 引数playerListにnullを渡す
+	 * testSetPlayerList003 異常系
+	 * ppublic void setPlayerList(List<JankenPlayer> playerList)
+	 * --確認事項--
+	 * playerListフィールドに値を代入する
+	 * --条件--
+	 * playerListフィールドの値はnull
+	 * 引数にnullを渡す
+	 * --検証項目--
+	 * 1. playerListフィールドの値はnullであるか
 	 */
 	@Test
 	public void testSetPlayerList003() {
@@ -1127,11 +1295,15 @@ public class JankenCuiGameApplicationImplTest{
 		}
 	}
 
-
 	/**
-	 * testGetPlayerList001 正常系
-	 * int getWinHand()
-	 * winHandフィールドを取得
+	 * testGetWinHand001 正常系
+	 * ppublic int getWinHand()
+	 * --確認事項--
+	 * winHandフィールドの値を返す
+	 * --条件--
+	 * winHandフィールドの値は1
+	 * --検証項目--
+	 * 1. 戻り値とwinHandフィールドの値が等しいか
 	 */
 	@Test
 	public void testGetWinHand001() {
@@ -1155,8 +1327,13 @@ public class JankenCuiGameApplicationImplTest{
 
 	/**
 	 * testSetPlayerList001 正常系
-	 * int getWinHand()
-	 * winHandフィールドを取得
+	 * ppublic int setWinHand()
+	 * --確認事項--
+	 * winHandフィールドに値を代入する
+	 * --条件--
+	 * winHandフィールドの値は0
+	 * --検証項目--
+	 * 1. 引数とwinHandフィールドの値が等しいか
 	 */
 	@Test
 	public void testSetWinHand001() {
@@ -1181,33 +1358,40 @@ public class JankenCuiGameApplicationImplTest{
 	/**
 	 * testAction001 正常系
 	 * public void action() throws SystemException
+	 * --確認事項--
 	 * humna:1人, cpu:1人, プレーヤー数2人以上 1回目2未満にして入力を再度求める
 	 * human:グー、cpu:チョキ、1回目あいこにして再度入力を求める
 	 * 継続し、同じ入力で繰り返して終了する
-	 * SystemExceptionも含めて例外が発生しないことを確認
+	 * --条件--
+	 * KeybordクラスはgetIntで指定した値を返すモック
+	 * RandomクラスはgetIntで指定した値を返すモック
+	 * --検証項目--
+	 * 1. SystemExceptionも含めて例外が発生しないことを確認
 	 */
 	@Test
 	public void testAction001() {
 		//モック化
 		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class);
 				//CpuPlayerチョキ、CpuPlayer:チョキ、CpuPlayer:チョキ
-			 MockedConstruction<Random> mockRandom = mockConstruction(Random.class, (random, context) -> when(random.nextInt(this.paper)).thenReturn(this.scissors-1))){
-
-			//HumanPlayer:1、CpuPlayer:0、HumanPlayer1、CpuPlayer1、HumanPlayer1、CpuPlayer1
+			 MockedConstruction<Random> mockRandom = mockConstruction(
+					 Random.class,
+					 (random, context) -> when(random.nextInt(this.paper)).thenReturn(this.scissors-1)
+			)
+		){
+			//入力(プレイヤー数) ー＞ HumanPlayer:1、CpuPlayer:0 |HumanPlayer1、CpuPlayer1 |HumanPlayer1、CpuPlayer1
 			mockKeybord.when(() -> Keybord.getInt()).thenReturn(this.one).thenReturn(this.zero).thenReturn(this.one).thenReturn(this.one).thenReturn(this.one).thenReturn(this.one);
-			//継続する, 終了する
+			//入力(継続するか)ー＞継続する | 終了する
 			mockKeybord.when(() -> Keybord.getInt(this.one, this.two)).thenReturn(this.one).thenReturn(this.two);
-			//HumanPlayer:チョキ、HumanPlayer:グー、HumanPlayer:グー
+			//入力(humanの手選択) ー＞ HumanPlayer:チョキ、HumanPlayer:グー、HumanPlayer:グー
 			mockKeybord.when(() -> Keybord.getInt(this.rock, this.paper)).thenReturn(this.scissors).thenReturn(this.rock).thenReturn(this.rock);
-			
+
 			//テストメソッド
 			this.jankenCuiGameApplicationImpl.action();
-			
+
 			//検証
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
 	}
-
 }
