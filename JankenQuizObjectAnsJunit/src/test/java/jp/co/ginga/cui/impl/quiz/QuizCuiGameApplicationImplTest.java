@@ -36,7 +36,6 @@ public class QuizCuiGameApplicationImplTest{
 	private String alphabet = "a";
 	private List<QuizQuestion> quizList = new ArrayList<QuizQuestion>();
 	private List<QuizQuestion> emptyQuizList = new ArrayList<QuizQuestion>();
-	private String errorMessage ;
 
 
 	//テストクラス
@@ -53,8 +52,6 @@ public class QuizCuiGameApplicationImplTest{
 						MessageProperties.getMessage("quiz.question.choice" + (i + 1)),
 						Integer.parseInt(MessageProperties.getMessage("quiz.question.correct" + (i + 1)))));
 			}
-
-			this.errorMessage = MessageProperties.getMessage("error.properties.error");
 
 		}catch(SystemException e) {
 			e.printStackTrace();

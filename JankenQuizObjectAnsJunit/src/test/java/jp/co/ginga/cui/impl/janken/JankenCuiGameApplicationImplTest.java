@@ -55,13 +55,11 @@ public class JankenCuiGameApplicationImplTest{
 	private List<JankenPlayer> emptyPlayerList = new ArrayList<JankenPlayer>();
 	private List<JankenPlayer> nullPlayerList = null;
 	private List<JankenPlayer> playerList = new ArrayList<JankenPlayer>(Arrays.asList(humanPlayer1, cpuPlayer1));
-	private List<JankenPlayer> humanPlayerList = new ArrayList<JankenPlayer>(Arrays.asList(humanPlayer1, humanPlayer2));
-	private List<JankenPlayer> cpuPlayerList = new ArrayList<JankenPlayer>(Arrays.asList(cpuPlayer1, cpuPlayer2));
 
 	@InjectMocks
 	private JankenCuiGameApplicationImpl jankenCuiGameApplicationImpl = new JankenCuiGameApplicationImpl();
-
-
+	
+	
 	/**
 	 * testInit001 正常系
 	 * private void init()

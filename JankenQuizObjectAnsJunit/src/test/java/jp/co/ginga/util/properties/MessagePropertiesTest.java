@@ -12,6 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
 
@@ -41,7 +42,17 @@ public class MessagePropertiesTest {
 	private String errorMessage2 = "error.nodata";
 	private String errorMessage3 = "msg.error.properties.load";
 	private String errorMessage4 = "msg.error.properties.nodata";
-
+	
+	@AfterAll
+	public static void setup() {
+		try {
+			Field propertyField = MessageProperties.class.getDeclaredField("properties");
+			propertyField.setAccessible(true);
+			propertyField.set(MessageProperties.class, null);
+		}catch(NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * testInit001 正常系

@@ -32,7 +32,6 @@ public class CpuJankenPlayerImplTest {
 	private String nullPlayerName = null;
 	private int playerHand = rock;
 	private int notSetting = 0;
-	private int from = rock;
 	private int to = paper;
 	private String errorMessage = "パラメーターの値が不正です。";
 
