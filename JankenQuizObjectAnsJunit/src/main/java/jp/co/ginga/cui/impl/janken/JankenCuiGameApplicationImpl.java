@@ -98,7 +98,7 @@ public class JankenCuiGameApplicationImpl implements CuiGameApplication {
 	 * 人間プレーヤーオブジェクト生成処理
 	 * @throws SystemException
 	 */
-	private void createHumanOfJankenPlayer() throws SystemException {
+	void createHumanOfJankenPlayer() throws SystemException {
 
 		while (true) {
 
@@ -128,7 +128,7 @@ public class JankenCuiGameApplicationImpl implements CuiGameApplication {
 	 * CPUプレーヤーオブジェクト生成処理
 	 * @throws SystemException
 	 */
-	private void createCpuOfJankenPlayer() throws SystemException {
+	void createCpuOfJankenPlayer() throws SystemException {
 
 		while (true) {
 
@@ -158,7 +158,7 @@ public class JankenCuiGameApplicationImpl implements CuiGameApplication {
 	 * じゃんけんの手を選択する処理
 	 * @throws SystemException
 	 */
-	private void selectJankenHand() throws SystemException {
+	void selectJankenHand() throws SystemException {
 		for (int i = 0; i < playerList.size(); i++) {
 			//じゃんけんプレーヤのじゃんけんの手を選択する処理
 			playerList.get(i).selectJankenHand();
@@ -171,7 +171,7 @@ public class JankenCuiGameApplicationImpl implements CuiGameApplication {
 	 * @return
 	 * @throws SystemException
 	 */
-	private int judge() throws SystemException {
+	int judge() throws SystemException {
 
 		boolean rockFlag = false;
 		boolean scissorsFlag = false;
@@ -212,7 +212,7 @@ public class JankenCuiGameApplicationImpl implements CuiGameApplication {
 	 * 勝利者表示処理
 	 * @throws SystemException
 	 */
-	private void viewWinner() throws SystemException {
+	void viewWinner() throws SystemException {
 		StringBuilder sb = new StringBuilder();
 		for (JankenPlayer player : playerList) {
 			if (this.winHand == player.getJankenHand()) {
@@ -227,7 +227,7 @@ public class JankenCuiGameApplicationImpl implements CuiGameApplication {
 	 * @return
 	 * @throws SystemException
 	 */
-	private boolean isCheckJankenPlayerCount() {
+	boolean isCheckJankenPlayerCount() {
 
 		if (playerList.size() >= 2) {
 			return true;
@@ -242,7 +242,7 @@ public class JankenCuiGameApplicationImpl implements CuiGameApplication {
 	 * @return true:続ける false:終了
 	 * @throws SystemException
 	 */
-	private boolean hasGameContinue() throws SystemException {
+	boolean hasGameContinue() throws SystemException {
 
 		while (true) {
 			try {
