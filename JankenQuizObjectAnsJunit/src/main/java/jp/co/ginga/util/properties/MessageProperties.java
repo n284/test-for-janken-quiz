@@ -54,8 +54,7 @@ public class MessageProperties {
 	public static String getMessage(String resourceId, String... arguments) throws SystemException {
 
 		//パラメーターチェック resourceId,arguments
-		if (resourceId == null || resourceId.isEmpty() 
-				|| arguments == null || arguments.length == 0) {
+		if (resourceId == null || resourceId.isEmpty() || arguments == null || arguments.length == 0) {
 			//rguments.length == 0の場合はこちらは呼び出されない
 
 			throw new SystemException(properties.getProperty("msg.error.argument"));

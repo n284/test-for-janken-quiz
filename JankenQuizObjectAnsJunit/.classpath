@@ -17,5 +17,6 @@
 	<classpathentry kind="lib" path="jar/byte-buddy-1.12.16.jar"/>
 	<classpathentry kind="lib" path="jar/mockito-inline-4.8.0.jar"/>
 	<classpathentry kind="lib" path="jar/byte-buddy-agent-1.12.16.jar"/>
+	<classpathentry kind="lib" path="jar/objenesis-3.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -23,10 +23,10 @@ import jp.co.ginga.util.exception.SystemException;
  *
  */
 public class MessagePropertiesTest {
-	
+
 	private final String FILE = "properties/messages.properties";
 	private final String CODE = "UTF-8";
-	
+
 	//テストデータ
 	private String messageId1 = "msg.start";
 	private String messageId2 = "janken.msg.game.winner";
@@ -42,7 +42,8 @@ public class MessagePropertiesTest {
 	private String errorMessage2 = "error.nodata";
 	private String errorMessage3 = "msg.error.properties.load";
 	private String errorMessage4 = "msg.error.properties.nodata";
-	
+	private String[] emptyStringArray = new String[0];
+
 	@AfterAll
 	public static void setup() {
 		try {
@@ -77,20 +78,20 @@ public class MessagePropertiesTest {
 
 			//テストメソッド
 			method.invoke(MessageProperties.class);
-			
+
 			//検証
 			Properties properties = new Properties();
 			InputStream is = MessageProperties.class.getClassLoader().getResourceAsStream(this.FILE);
 			properties.load(new InputStreamReader(is, this.CODE));
 			Properties result = (Properties) propertiesField.get(MessageProperties.class);
 			assertEquals(properties, result);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
 	}
-	
+
 	/**
 	 * testInit002 正常系
 	 * private static void init() throws SystemException
@@ -116,11 +117,11 @@ public class MessagePropertiesTest {
 
 			//テストメソッド
 			method.invoke(MessageProperties.class);
-			
+
 			//検証
 			Properties result = (Properties) propertiesField.get(MessageProperties.class);
 			assertEquals(properties, result);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
@@ -157,7 +158,7 @@ public class MessagePropertiesTest {
 
 			//テストメソッド
 			InvocationTargetException e = assertThrows(InvocationTargetException.class, () -> method.invoke(MessageProperties.class));
-			
+
 			//検証
 			assertEquals(SystemException.class, e.getTargetException().getClass());
 
@@ -184,13 +185,13 @@ public class MessagePropertiesTest {
 			Field propertiesField = MessageProperties.class.getDeclaredField("properties");
 			propertiesField.setAccessible(true);
 			propertiesField.set(MessageProperties.class, null);
-			
+
 			//テストメソッド
 			String result = MessageProperties.getMessage(this.messageId1);
-			
+
 			//検証
 			assertEquals(this.message1, result);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
@@ -207,7 +208,7 @@ public class MessagePropertiesTest {
 		 * --検証項目--
 		 * 1. SystemExceptionがスローされるか
 		 * 2. メッセージ「msg.error.argument」が含まれているか
-		 * 
+		 *
 		 * ＊(initメソッドをパラメーターチェックよりも前に実行しないとpropertiesがnullのためNullPointerExceptionが発生する)
 		 */
 		@Test
@@ -216,7 +217,7 @@ public class MessagePropertiesTest {
 				//準備
 				Field propertiesField = MessageProperties.class.getDeclaredField("properties");
 				propertiesField.setAccessible(true);
-				
+
 				//モック化
 				Properties mockProperties = mock(Properties.class);
 				when(mockProperties.getProperty(this.errorMessageId1)).thenReturn(this.errorMessage);
@@ -225,13 +226,13 @@ public class MessagePropertiesTest {
 				//テストメソッド、検証
 				SystemException e = assertThrows(SystemException.class, () -> MessageProperties.getMessage(null));
 				assertEquals(this.errorMessage, e.getSysMsg());
-				
+
 			}catch(Exception e) {
 				e.printStackTrace();
 				fail();
 			}
 		}
-		
+
 	/**
 	 * testGetMessage003 異常系
 	 * public static String getMessage(String resourceId) throws SystemException
@@ -242,7 +243,7 @@ public class MessagePropertiesTest {
 	 * --検証項目--
 	 * 1. SystemExceptionがスローされるか
 	 * 2. メッセージ「msg.error.argument」が含まれているか
-	 * 
+	 *
 	 * ＊(initメソッドをパラメーターチェックよりも前に実行しないとpropertiesがnullのためNullPointerExceptionが発生する)
 	 */
 	@Test
@@ -251,7 +252,7 @@ public class MessagePropertiesTest {
 			//準備
 			Field propertiesField = MessageProperties.class.getDeclaredField("properties");
 			propertiesField.setAccessible(true);
-			
+
 			//モック化
 			Properties mockProperties = mock(Properties.class);
 			when(mockProperties.getProperty(this.errorMessageId1)).thenReturn(this.errorMessage);
@@ -260,13 +261,13 @@ public class MessagePropertiesTest {
 			//テストメソッド、検証
 			SystemException e = assertThrows(SystemException.class, () -> MessageProperties.getMessage(this.emptyMessageId));
 			assertEquals(this.errorMessage, e.getSysMsg());
-			
+
 		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
 		}
 	}
-	
+
 	/**
 	 * testGetMessage004 異常系
 	 * public static String getMessage(String resourceId) throws SystemException
@@ -276,7 +277,7 @@ public class MessagePropertiesTest {
 	 * 引数resourceIdはメッセージプロパティにある文字列
 	 * --検証項目--
 	 * 1. SystemExceptionがスローされるか
-	 * 2. メッセージ「msg.error.properties.load」が含まれているか 
+	 * 2. メッセージ「msg.error.properties.load」が含まれているか
 	 */
 	@Test
 	public void testGetMessage004() {
@@ -292,11 +293,11 @@ public class MessagePropertiesTest {
 			Field propertiesField = MessageProperties.class.getDeclaredField("properties");
 			propertiesField.setAccessible(true);
 			propertiesField.set(MessageProperties.class, null);
-			
+
 			//テストメソッド、検証
 			SystemException e = assertThrows(SystemException.class, () -> MessageProperties.getMessage(this.messageId1));
 			assertEquals(this.errorMessage3, e.getSysMsg());
-			
+
 		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
@@ -313,7 +314,7 @@ public class MessagePropertiesTest {
 	 * --検証項目--
 	 * 1. SystemExceptionがスローされるか
 	 * 2. メッセージ「error.nodata」が含まれているか ＊
-	 * 
+	 *
 	 * ＊(メッセージプロパティに「error.nodata」が存在しないため例外にnullが渡されている)
 	 */
 	@Test
@@ -322,7 +323,7 @@ public class MessagePropertiesTest {
 			//準備
 			Field propertiesField = MessageProperties.class.getDeclaredField("properties");
 			propertiesField.setAccessible(true);
-			
+
 			//モック化
 			Properties mockProperties = mock(Properties.class);
 			when(mockProperties.getProperty(this.messageId1)).thenReturn(null);
@@ -332,7 +333,7 @@ public class MessagePropertiesTest {
 			//テストメソッド、検証
 			SystemException e = assertThrows(SystemException.class, () -> MessageProperties.getMessage(this.messageId1));
 			assertEquals(this.errorMessage2, e.getSysMsg());
-			
+
 		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
@@ -355,10 +356,10 @@ public class MessagePropertiesTest {
 		try {
 			//テストメソッド
 			String result = MessageProperties.getMessage(this.messageId2, this.embedMessage);
-			
+
 			//検証
 			assertEquals(this.message2, result);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
@@ -367,40 +368,6 @@ public class MessagePropertiesTest {
 
 	/**
 	 * testGetMessageEmbed002 異常系
-	 * public static String getMessage(String resourceId, String... arguments) throws SystemException
-	 * --確認事項--
-	 * 引数に空の文字列と埋め込む文字列を渡してSystemExceptionが発生するか
-	 * --条件--
-	 * 引数resourceIdは空の文字列
-	 * 埋め込むデータは文字列
-	 * --検証項目--
-	 * 1. SystemExceptionがスローされるか
-	 * 2. メッセージ「msg.error.argument」が含まれるか
-	 */
-	@Test
-	public void testGetMessageEmbed002() {
-		try {
-			//準備
-			Field propertiesField = MessageProperties.class.getDeclaredField("properties");
-			propertiesField.setAccessible(true);
-			
-			//モック化
-			Properties mockProperties = mock(Properties.class);
-			when(mockProperties.getProperty(this.errorMessageId1)).thenReturn(this.errorMessage);
-			propertiesField.set(MessageProperties.class, mockProperties);
-
-			//テストメソッド、検証
-			SystemException e = assertThrows(SystemException.class, () -> MessageProperties.getMessage(this.emptyMessageId, this.embedMessage));
-			assertEquals(this.errorMessage, e.getSysMsg());
-			
-		}catch(Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-	}
-
-	/**
-	 * testGetMessageEmbed003 異常系
 	 * public static String getMessage(String resourceId, String... arguments) throws SystemException
 	 * --確認事項--
 	 * 引数にnullと埋め込む文字列を渡してSystemExceptionが発生するか
@@ -412,12 +379,12 @@ public class MessagePropertiesTest {
 	 * 2. メッセージ「msg.error.argument」が含まれるか
 	 */
 	@Test
-	public void testGetMessageEmbed003() {
+	public void testGetMessageEmbed002() {
 		try {
 			//準備
 			Field propertiesField = MessageProperties.class.getDeclaredField("properties");
 			propertiesField.setAccessible(true);
-			
+
 			//モック化
 			Properties mockProperties = mock(Properties.class);
 			when(mockProperties.getProperty(this.errorMessageId1)).thenReturn(this.errorMessage);
@@ -426,13 +393,47 @@ public class MessagePropertiesTest {
 			//テストメソッド、検証
 			SystemException e = assertThrows(SystemException.class, () -> MessageProperties.getMessage(null, this.embedMessage));
 			assertEquals(this.errorMessage, e.getSysMsg());
-			
+
 		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
 		}
 	}
-	
+
+	/**
+	 * testGetMessageEmbed003 異常系
+	 * public static String getMessage(String resourceId, String... arguments) throws SystemException
+	 * --確認事項--
+	 * 引数に空の文字列と埋め込む文字列を渡してSystemExceptionが発生するか
+	 * --条件--
+	 * 引数resourceIdは空の文字列
+	 * 埋め込むデータは文字列
+	 * --検証項目--
+	 * 1. SystemExceptionがスローされるか
+	 * 2. メッセージ「msg.error.argument」が含まれるか
+	 */
+	@Test
+	public void testGetMessageEmbed003() {
+		try {
+			//準備
+			Field propertiesField = MessageProperties.class.getDeclaredField("properties");
+			propertiesField.setAccessible(true);
+
+			//モック化
+			Properties mockProperties = mock(Properties.class);
+			when(mockProperties.getProperty(this.errorMessageId1)).thenReturn(this.errorMessage);
+			propertiesField.set(MessageProperties.class, mockProperties);
+
+			//テストメソッド、検証
+			SystemException e = assertThrows(SystemException.class, () -> MessageProperties.getMessage(this.emptyMessageId, this.embedMessage));
+			assertEquals(this.errorMessage, e.getSysMsg());
+
+		}catch(Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+
 	/**
 	 * testGetMessageEmbed004 異常系
 	 * public static String getMessage(String resourceId, String... arguments) throws SystemException
@@ -451,7 +452,7 @@ public class MessagePropertiesTest {
 			//準備
 			Field propertiesField = MessageProperties.class.getDeclaredField("properties");
 			propertiesField.setAccessible(true);
-			
+
 			//モック化
 			Properties mockProperties = mock(Properties.class);
 			when(mockProperties.getProperty(this.errorMessageId1)).thenReturn(this.errorMessage);
@@ -460,15 +461,49 @@ public class MessagePropertiesTest {
 			//テストメソッド、検証
 			SystemException e = assertThrows(SystemException.class, () -> MessageProperties.getMessage(this.message2, null));
 			assertEquals(this.errorMessage, e.getSysMsg());
-			
+
 		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
 		}
 	}
-	
+
 	/**
 	 * testGetMessageEmbed005 異常系
+	 * public static String getMessage(String resourceId, String... arguments) throws SystemException
+	 * --確認事項--
+	 * 引数に文字列と長さ0の配列を渡してSystemExceptionが発生するか
+	 * --条件--
+	 * 引数resourceIdはメッセージプロパティにある文字列
+	 * 埋め込むデータはnull
+	 * --検証項目--
+	 * 1. SystemExceptionがスローされるか
+	 * 2. メッセージ「msg.error.argument」が含まれるか
+	 */
+	@Test
+	public void testGetMessageEmbed005() {
+		try {
+			//準備
+			Field propertiesField = MessageProperties.class.getDeclaredField("properties");
+			propertiesField.setAccessible(true);
+
+			//モック化
+			Properties mockProperties = mock(Properties.class);
+			when(mockProperties.getProperty(this.errorMessageId1)).thenReturn(this.errorMessage);
+			propertiesField.set(MessageProperties.class, mockProperties);
+
+			//テストメソッド、検証
+			SystemException e = assertThrows(SystemException.class, () -> MessageProperties.getMessage(this.message2, this.emptyStringArray));
+			assertEquals(this.errorMessage, e.getSysMsg());
+
+		}catch(Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * testGetMessageEmbed006 異常系
 	 * public static String getMessage(String resourceId, String... arguments) throws SystemException
 	 * --確認事項--
 	 * 引数に文字列と埋め込む文字列を渡してプロパティの初期化に失敗しSystemExceptionが発生すること
@@ -477,10 +512,10 @@ public class MessagePropertiesTest {
 	 * 埋め込むデータは文字列
 	 * --検証項目--
 	 * 1. SystemExceptionがスローされるか
-	 * 2. メッセージ「msg.error.properties.load」が含まれているか 
+	 * 2. メッセージ「msg.error.properties.load」が含まれているか
 	 */
 	@Test
-	public void testGetMessageEmbed005() {
+	public void testGetMessageEmbed006() {
 		//モック化
 		try(MockedConstruction<Properties> mockProperties = mockConstruction(
 				Properties.class,
@@ -493,19 +528,19 @@ public class MessagePropertiesTest {
 			Field propertiesField = MessageProperties.class.getDeclaredField("properties");
 			propertiesField.setAccessible(true);
 			propertiesField.set(MessageProperties.class, null);
-			
+
 			//テストメソッド、検証
 			SystemException e = assertThrows(SystemException.class, () -> MessageProperties.getMessage(this.messageId2, this.embedMessage));
 			assertEquals(this.errorMessage3, e.getSysMsg());
-			
+
 		}catch(Exception e) {
 			e.printStackTrace();
 			fail();
 		}
 	}
-	
+
 	/**
-	 * testGetMessageEmbed006 異常系
+	 * testGetMessageEmbed007 異常系
 	 * public static String getMessage(String resourceId) throws SystemException
 	 * --確認事項--
 	 * 引数に文字列と埋め込む文字列を渡してSystemExceptionが発生すること
@@ -514,17 +549,17 @@ public class MessagePropertiesTest {
 	 * --検証項目--
 	 * 1. SystemExceptionがスローされるか
 	 * 2. メッセージ「msg.error.properties.nodata」が含まれているか ＊
-	 * 
+	 *
 	 * ＊(メッセージプロパティに「msg.error.properties.nodata」が存在しないため例外にnullが渡されている)
 	 */
 	@Test
-	public void testGetMessageEmbed006() {
-		
+	public void testGetMessageEmbed007() {
+
 		try {
 			//準備
 			Field propertiesField = MessageProperties.class.getDeclaredField("properties");
 			propertiesField.setAccessible(true);
-			
+
 			//モック化
 			Properties mockProperties = mock(Properties.class);
 			when(mockProperties.getProperty(this.messageId2)).thenReturn(null);
@@ -539,7 +574,7 @@ public class MessagePropertiesTest {
 			fail();
 		}
 	}
-	
+
 	/**
 	 * カバレッジを100%にするためのコンストラクタテスト
 	 */
