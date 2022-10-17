@@ -76,7 +76,6 @@ public class JankenCuiGameApplicationImpl implements CuiGameApplication {
 
 		System.out.println(MessageProperties.getMessage("janken.msg.end"));
 
-
 	}
 
 	/**
@@ -253,7 +252,7 @@ public class JankenCuiGameApplicationImpl implements CuiGameApplication {
 				case 2:
 					return false;
 				default:
-					throw new SystemException(MessageProperties.getMessage("errpr.stop"));
+					throw new SystemException(MessageProperties.getMessage("error.stop"));//errorがerrprになっていたので修正
 				}
 
 			} catch (ApplicationException e) {
