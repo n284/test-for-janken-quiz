@@ -189,7 +189,7 @@ public class JankenCuiGameApplicationImpl implements CuiGameApplication {
 				paperFlag = true;
 				break;
 			default:
-				throw new SystemException(MessageProperties.getMessage("errpr.stop")); //メッセージが取得されていなかったので修正
+				throw new SystemException(MessageProperties.getMessage("error.stop")); //メッセージが取得されていなかったので修正、
 			}
 
 		}

@@ -23,6 +23,7 @@ import jp.co.ginga.cui.impl.janken.jankenplayer.impl.HumanJankenPlayerImpl;
 import jp.co.ginga.util.exception.ApplicationException;
 import jp.co.ginga.util.exception.SystemException;
 import jp.co.ginga.util.keybord.Keybord;
+import jp.co.ginga.util.properties.MessageProperties;
 
 /**
  * CUIじゃんけん実装クラス
@@ -32,11 +33,534 @@ import jp.co.ginga.util.keybord.Keybord;
 public class JankenCuiGameApplicationImplTest{
 
 	/*
+	 * ・テストを書く際はJavaDocでどんなテストを行うのか、テスト内容と検証内容を記入する
+	 * ・テストしたいメソッドの処理を理解して戻り値がどうなっていればいいかを把握する
+	 * ・処理を把握する際に正常系のテストだけでなく異常系のテストも考える
+	 * ・C0(命令網羅)、C1(分岐網羅)、C2(条件網羅)が100%になるようにテストケースを考える
+	 * ・テストする際に必要になるデータはメソッドごとに分けると把握しやすい(共通して使うデータはフィールドに定義してもよい)
+	 * ・Junit5でmock化できるのはprivateメソッド以外可能(privateメソッドはmock化できないため、package privateでアクセスできるようにしている)
+	 */
+
+	/*
 	 * privateメソッドはmock化できないのでinit以外のすべてのアクセス修飾子をpackage privateに変える
 	 * テスト対象クラス
 	 */
 	private JankenCuiGameApplicationImpl jankenCuiGameApplicationImpl = new JankenCuiGameApplicationImpl();
 
+	/**
+	 * testAction001 正常系
+	 * public void action() throws SystemException
+	 * --確認事項--
+	 * isCheckJankenPlayerCountメソッドでtrueを返し、
+	 * judgeメソッドでROCKを返し、
+	 * hasGameContinueメソッドでfalseを返ようにして正常に処理が進む
+	 * --条件--
+	 * initはprivateメソッドなので呼び出す
+	 * playerListはnull
+	 * 他のメソッドはmock化
+	 * actionメソッドは正常に呼び出すためにspy化
+	 * --検証項目--
+	 * 1. SystemExceptionも含めて例外が発生しないことを確認
+	 * 2. メソッドの呼び出し回数
+	 */
+	@Test
+	public void testAction001() {
+
+		try{
+			//テストデータ
+			int rock = JankenParam.ROCK.getInt();
+
+			//スパイ・モック化
+			JankenCuiGameApplicationImpl spyGame = spy(JankenCuiGameApplicationImpl.class);
+			doNothing().when(spyGame).createCpuOfJankenPlayer();
+			doNothing().when(spyGame).createHumanOfJankenPlayer();
+			doReturn(true).when(spyGame).isCheckJankenPlayerCount();
+			doNothing().when(spyGame).selectJankenHand();
+			doReturn(rock).when(spyGame).judge();
+			doNothing().when(spyGame).viewWinner();
+			doReturn(false).when(spyGame).hasGameContinue();
+
+			//準備
+			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
+			playerListField.setAccessible(true);
+			playerListField.set(spyGame, null);
+
+			//テストメソッド
+			spyGame.action();
+
+			//検証
+			verify(spyGame, times(1)).createCpuOfJankenPlayer();
+			verify(spyGame, times(1)).createHumanOfJankenPlayer();
+			verify(spyGame, times(1)).isCheckJankenPlayerCount();
+			verify(spyGame, times(1)).selectJankenHand();
+			verify(spyGame, times(1)).judge();
+			verify(spyGame, times(1)).viewWinner();
+			verify(spyGame, times(1)).hasGameContinue();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * testAction002 正常系
+	 * public void action() throws SystemException
+	 * --確認事項--
+	 * isCheckJankenPlayerCountメソッドでtrueを返し、
+	 * judgeメソッドでSCISSORSを返し、
+	 * hasGameContinueメソッドでfalseを返ようにして正常に処理が進む
+	 * --条件--
+	 * initはprivateメソッドなので呼び出す
+	 * playerListはnull
+	 * 他のメソッドはmock化
+	 * actionメソッドは正常に呼び出すためにspy化
+	 * --検証項目--
+	 * 1. SystemExceptionも含めて例外が発生しないことを確認
+	 * 2. メソッドの呼び出し回数
+	 */
+	@Test
+	public void testAction002() {
+
+		try{
+			//テストデータ
+			int scissors = JankenParam.SCISSORS.getInt();
+
+			//スパイ・モック化
+			JankenCuiGameApplicationImpl spyGame = spy(JankenCuiGameApplicationImpl.class);
+			doNothing().when(spyGame).createCpuOfJankenPlayer();
+			doNothing().when(spyGame).createHumanOfJankenPlayer();
+			doReturn(true).when(spyGame).isCheckJankenPlayerCount();
+			doNothing().when(spyGame).selectJankenHand();
+			doReturn(scissors).when(spyGame).judge();
+			doNothing().when(spyGame).viewWinner();
+			doReturn(false).when(spyGame).hasGameContinue();
+
+			//準備
+			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
+			playerListField.setAccessible(true);
+			playerListField.set(spyGame, null);
+
+			//テストメソッド
+			spyGame.action();
+
+			//検証
+			verify(spyGame, times(1)).createCpuOfJankenPlayer();
+			verify(spyGame, times(1)).createHumanOfJankenPlayer();
+			verify(spyGame, times(1)).isCheckJankenPlayerCount();
+			verify(spyGame, times(1)).selectJankenHand();
+			verify(spyGame, times(1)).judge();
+			verify(spyGame, times(1)).viewWinner();
+			verify(spyGame, times(1)).hasGameContinue();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * testAction003 正常系
+	 * public void action() throws SystemException
+	 * --確認事項--
+	 * isCheckJankenPlayerCountメソッドでtrueを返し、
+	 * judgeメソッドでPAPERを返し、
+	 * hasGameContinueメソッドでfalseを返ようにして正常に処理が進む
+	 * --条件--
+	 * initはprivateメソッドなので呼び出す
+	 * playerListはnull
+	 * 他のメソッドはmock化
+	 * actionメソッドは正常に呼び出すためにspy化
+	 * --検証項目--
+	 * 1. SystemExceptionも含めて例外が発生しないことを確認
+	 * 2. メソッドの呼び出し回数
+	 */
+	@Test
+	public void testAction003() {
+
+		try{
+			//テストデータ
+			int paper = JankenParam.PAPER.getInt();
+
+			//スパイ・モック化
+			JankenCuiGameApplicationImpl spyGame = spy(JankenCuiGameApplicationImpl.class);
+			doNothing().when(spyGame).createCpuOfJankenPlayer();
+			doNothing().when(spyGame).createHumanOfJankenPlayer();
+			doReturn(true).when(spyGame).isCheckJankenPlayerCount();
+			doNothing().when(spyGame).selectJankenHand();
+			doReturn(paper).when(spyGame).judge();
+			doNothing().when(spyGame).viewWinner();
+			doReturn(false).when(spyGame).hasGameContinue();
+
+			//準備
+			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
+			playerListField.setAccessible(true);
+			playerListField.set(spyGame, null);
+
+			//テストメソッド
+			spyGame.action();
+
+			//検証
+			verify(spyGame, times(1)).createCpuOfJankenPlayer();
+			verify(spyGame, times(1)).createHumanOfJankenPlayer();
+			verify(spyGame, times(1)).isCheckJankenPlayerCount();
+			verify(spyGame, times(1)).selectJankenHand();
+			verify(spyGame, times(1)).judge();
+			verify(spyGame, times(1)).viewWinner();
+			verify(spyGame, times(1)).hasGameContinue();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * testAction004 正常系
+	 * public void action() throws SystemException
+	 * --確認事項--
+	 * isCheckJankenPlayerCountメソッドでtrueを返し、
+	 * judgeメソッドで一回目をDRAW、2回目をROCKを返し、
+	 * hasGameContinueメソッドでfalseを返ようにして正常に処理が進む
+	 * --条件--
+	 * initはprivateメソッドなので呼び出す
+	 * playerListはnull
+	 * 他のメソッドはmock化
+	 * actionメソッドは正常に呼び出すためにspy化
+	 * --検証項目--
+	 * 1. SystemExceptionも含めて例外が発生しないことを確認
+	 * 2. メソッドの呼び出し回数
+	 */
+	@Test
+	public void testAction004() {
+
+		try{
+			//テストデータ
+			int rock = JankenParam.ROCK.getInt();
+			int draw = JankenParam.DRAW.getInt();
+
+			//スパイ・モック化
+			JankenCuiGameApplicationImpl spyGame = spy(JankenCuiGameApplicationImpl.class);
+			doNothing().when(spyGame).createCpuOfJankenPlayer();
+			doNothing().when(spyGame).createHumanOfJankenPlayer();
+			doReturn(true).when(spyGame).isCheckJankenPlayerCount();
+			doNothing().when(spyGame).selectJankenHand();
+			doReturn(draw).doReturn(rock).when(spyGame).judge();
+			doNothing().when(spyGame).viewWinner();
+			doReturn(false).when(spyGame).hasGameContinue();
+
+			//準備
+			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
+			playerListField.setAccessible(true);
+			playerListField.set(spyGame, null);
+
+			//テストメソッド
+			spyGame.action();
+
+			//検証
+			verify(spyGame, times(1)).createCpuOfJankenPlayer();
+			verify(spyGame, times(1)).createHumanOfJankenPlayer();
+			verify(spyGame, times(1)).isCheckJankenPlayerCount();
+			verify(spyGame, times(2)).selectJankenHand();
+			verify(spyGame, times(2)).judge();
+			verify(spyGame, times(1)).viewWinner();
+			verify(spyGame, times(1)).hasGameContinue();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * testAction005 正常系
+	 * public void action() throws SystemException
+	 * --確認事項--
+	 * isCheckJankenPlayerCountメソッドで1回目でfalse、2回目でtrueを返し、
+	 * judgeメソッドでROCKを返し、
+	 * hasGameContinueメソッドでfalseを返ようにして正常に処理が進む
+	 * --条件--
+	 * initはprivateメソッドなので呼び出す
+	 * playerListはnull
+	 * 他のメソッドはmock化
+	 * actionメソッドは正常に呼び出すためにspy化
+	 * --検証項目--
+	 * 1. SystemExceptionも含めて例外が発生しないことを確認
+	 * 2. メソッドの呼び出し回数
+	 */
+	@Test
+	public void testAction005() {
+
+		try{
+			//テストデータ
+			int rock = JankenParam.ROCK.getInt();
+
+			//スパイ・モック化
+			JankenCuiGameApplicationImpl spyGame = spy(JankenCuiGameApplicationImpl.class);
+			doNothing().when(spyGame).createCpuOfJankenPlayer();
+			doNothing().when(spyGame).createHumanOfJankenPlayer();
+			doReturn(false).doReturn(true).when(spyGame).isCheckJankenPlayerCount();
+			doNothing().when(spyGame).selectJankenHand();
+			doReturn(rock).when(spyGame).judge();
+			doNothing().when(spyGame).viewWinner();
+			doReturn(false).when(spyGame).hasGameContinue();
+
+			//準備
+			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
+			playerListField.setAccessible(true);
+			playerListField.set(spyGame, null);
+
+			//テストメソッド
+			spyGame.action();
+
+			//検証
+			verify(spyGame, times(2)).createCpuOfJankenPlayer();
+			verify(spyGame, times(2)).createHumanOfJankenPlayer();
+			verify(spyGame, times(2)).isCheckJankenPlayerCount();
+			verify(spyGame, times(1)).selectJankenHand();
+			verify(spyGame, times(1)).judge();
+			verify(spyGame, times(1)).viewWinner();
+			verify(spyGame, times(1)).hasGameContinue();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * testAction006 正常系
+	 * public void action() throws SystemException
+	 * --確認事項--
+	 * isCheckJankenPlayerCountメソッドでtrueで返し、
+	 * judgeメソッドでROCKを返し、
+	 * hasGameContinueメソッドで1回目true、2回目でfalseを返ようにして正常に処理が進む
+	 * --条件--
+	 * initはprivateメソッドなので呼び出す
+	 * playerListはnull
+	 * 他のメソッドはmock化
+	 * actionメソッドは正常に呼び出すためにspy化
+	 * --検証項目--
+	 * 1. SystemExceptionも含めて例外が発生しないことを確認
+	 */
+	@Test
+	public void testAction006() {
+
+		try{
+			//テストデータ
+			int rock = JankenParam.ROCK.getInt();
+
+			//スパイ・モック化
+			JankenCuiGameApplicationImpl spyGame = spy(JankenCuiGameApplicationImpl.class);
+			doNothing().when(spyGame).createCpuOfJankenPlayer();
+			doNothing().when(spyGame).createHumanOfJankenPlayer();
+			doReturn(true).when(spyGame).isCheckJankenPlayerCount();
+			doNothing().when(spyGame).selectJankenHand();
+			doReturn(rock).when(spyGame).judge();
+			doNothing().when(spyGame).viewWinner();
+			doReturn(true).doReturn(false).when(spyGame).hasGameContinue();
+
+			//準備
+			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
+			playerListField.setAccessible(true);
+			playerListField.set(spyGame, null);
+
+			//テストメソッド
+			spyGame.action();
+
+			//検証
+			verify(spyGame, times(2)).createCpuOfJankenPlayer();
+			verify(spyGame, times(2)).createHumanOfJankenPlayer();
+			verify(spyGame, times(2)).isCheckJankenPlayerCount();
+			verify(spyGame, times(2)).selectJankenHand();
+			verify(spyGame, times(2)).judge();
+			verify(spyGame, times(2)).viewWinner();
+			verify(spyGame, times(2)).hasGameContinue();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * testAction007 異常系
+	 * public void action() throws SystemException
+	 * --確認事項--
+	 * getMessageで"janken.msg.start"が見つからない場合、SystemExceptionが発生する
+	 * --条件--
+	 * initはprivateメソッドなので呼び出す
+	 * playerListはnull
+	 * getMessageをモック化
+	 * actionメソッドは正常に呼び出すためにspy化
+	 * --検証項目--
+	 * 1. SystemExceptionに"janken.msg.start"が含まれているか
+	 */
+	@Test
+	public void testAction007() {
+		//スパイ化
+		JankenCuiGameApplicationImpl spyGame = spy(JankenCuiGameApplicationImpl.class);
+		//モック化
+		try(MockedStatic<MessageProperties> mockMessageProperties = mockStatic(MessageProperties.class)){
+			mockMessageProperties.when(() -> MessageProperties.getMessage("janken.msg.start")).thenThrow(new SystemException("janken.msg.start"));
+
+			//準備
+			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
+			playerListField.setAccessible(true);
+			playerListField.set(spyGame, null);
+
+			//テストメソッド・検証
+			SystemException result = assertThrows(SystemException.class, () -> spyGame.action());
+			assertEquals("janken.msg.start", result.getSysMsg());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * testAction008 異常系
+	 * public void action() throws SystemException
+	 * --確認事項--
+	 * getMessageで"janken.msg.player.count.error"が見つからない場合、SystemExceptionが発生する
+	 * --条件--
+	 * initはprivateメソッドなので呼び出す
+	 * playerListはnull
+	 * getMessageをモック化
+	 * actionメソッドは正常に呼び出すためにspy化
+	 * --検証項目--
+	 * 1. SystemExceptionに"janken.msg.player.count.error"が含まれているか
+	 */
+	@Test
+	public void testAction008() {
+		//スパイ化
+		JankenCuiGameApplicationImpl spyGame = spy(JankenCuiGameApplicationImpl.class);
+		//モック化
+		try(MockedStatic<MessageProperties> mockMessageProperties = mockStatic(MessageProperties.class)){
+			mockMessageProperties.when(() -> MessageProperties.getMessage("janken.msg.player.count.error")).thenThrow(new SystemException("janken.msg.player.count.error"));
+			doNothing().when(spyGame).createCpuOfJankenPlayer();
+			doNothing().when(spyGame).createHumanOfJankenPlayer();
+			doReturn(false).when(spyGame).isCheckJankenPlayerCount();
+
+			//準備
+			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
+			playerListField.setAccessible(true);
+			playerListField.set(spyGame, null);
+
+			//テストメソッド・検証
+			SystemException result = assertThrows(SystemException.class, () -> spyGame.action());
+			assertEquals("janken.msg.player.count.error", result.getSysMsg());
+			verify(spyGame, times(1)).createCpuOfJankenPlayer();
+			verify(spyGame, times(1)).createHumanOfJankenPlayer();
+			verify(spyGame, times(1)).isCheckJankenPlayerCount();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * testAction009 異常系
+	 * public void action() throws SystemException
+	 * --確認事項--
+	 * getMessageで"janken.msg.game.draw"が見つからない場合、SystemExceptionが発生する
+	 * --条件--
+	 * initはprivateメソッドなので呼び出す
+	 * playerListはnull
+	 * getMessageをモック化
+	 * actionメソッドは正常に呼び出すためにspy化
+	 * --検証項目--
+	 * 1. SystemExceptionに"janken.msg.game.draw"が含まれているか
+	 */
+	@Test
+	public void testAction009() {
+		//テストデータ
+		int draw = JankenParam.DRAW.getInt();
+
+		//スパイ化
+		JankenCuiGameApplicationImpl spyGame = spy(JankenCuiGameApplicationImpl.class);
+		//モック化
+		try(MockedStatic<MessageProperties> mockMessageProperties = mockStatic(MessageProperties.class)){
+			mockMessageProperties.when(() -> MessageProperties.getMessage("janken.msg.game.draw")).thenThrow(new SystemException("janken.msg.game.draw"));
+			doNothing().when(spyGame).createCpuOfJankenPlayer();
+			doNothing().when(spyGame).createHumanOfJankenPlayer();
+			doReturn(true).when(spyGame).isCheckJankenPlayerCount();
+			doReturn(draw).when(spyGame).judge();
+
+			//準備
+			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
+			playerListField.setAccessible(true);
+			playerListField.set(spyGame, null);
+
+			//テストメソッド・検証
+			SystemException result = assertThrows(SystemException.class, () -> spyGame.action());
+			assertEquals("janken.msg.game.draw", result.getSysMsg());
+			verify(spyGame, times(1)).createCpuOfJankenPlayer();
+			verify(spyGame, times(1)).createHumanOfJankenPlayer();
+			verify(spyGame, times(1)).isCheckJankenPlayerCount();
+			verify(spyGame, times(1)).selectJankenHand();
+			verify(spyGame, times(1)).judge();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * testAction010 異常系
+	 * public void action() throws SystemException
+	 * --確認事項--
+	 * getMessageで"janken.msg.end"が見つからない場合、SystemExceptionが発生する
+	 * --条件--
+	 * initはprivateメソッドなので呼び出す
+	 * playerListはnull
+	 * getMessageをモック化
+	 * actionメソッドは正常に呼び出すためにspy化
+	 * --検証項目--
+	 * 1. SystemExceptionに"janken.msg.end"が含まれているか
+	 */
+	@Test
+	public void testAction010() {
+		//テストデータ
+		int rock = JankenParam.ROCK.getInt();
+
+		//スパイ化
+		JankenCuiGameApplicationImpl spyGame = spy(JankenCuiGameApplicationImpl.class);
+		//モック化
+		try(MockedStatic<MessageProperties> mockMessageProperties = mockStatic(MessageProperties.class)){
+			mockMessageProperties.when(() -> MessageProperties.getMessage("janken.msg.end")).thenThrow(new SystemException("janken.msg.end"));
+			doNothing().when(spyGame).createCpuOfJankenPlayer();
+			doNothing().when(spyGame).createHumanOfJankenPlayer();
+			doReturn(true).when(spyGame).isCheckJankenPlayerCount();
+			doNothing().when(spyGame).selectJankenHand();
+			doReturn(rock).when(spyGame).judge();
+			doNothing().when(spyGame).viewWinner();
+			doReturn(false).when(spyGame).hasGameContinue();
+
+			//準備
+			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
+			playerListField.setAccessible(true);
+			playerListField.set(spyGame, null);
+
+			//テストメソッド・検証
+			SystemException result = assertThrows(SystemException.class, () -> spyGame.action());
+			assertEquals("janken.msg.end", result.getSysMsg());
+			verify(spyGame, times(1)).createCpuOfJankenPlayer();
+			verify(spyGame, times(1)).createHumanOfJankenPlayer();
+			verify(spyGame, times(1)).isCheckJankenPlayerCount();
+			verify(spyGame, times(1)).selectJankenHand();
+			verify(spyGame, times(1)).judge();
+			verify(spyGame, times(1)).viewWinner();
+			verify(spyGame, times(1)).hasGameContinue();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
 
 	/**
 	 * testInit001 正常系
@@ -1340,10 +1864,10 @@ public class JankenCuiGameApplicationImplTest{
 			//準備
 			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("hasGameContinue");
 			method.setAccessible(true);
-
+			
 			//テストメソッド
 			InvocationTargetException e = assertThrows(InvocationTargetException.class, () -> method.invoke(this.jankenCuiGameApplicationImpl));
-
+			
 			//検証
 			assertEquals(SystemException.class , e.getTargetException().getClass());
 			mockKeybord.verify(() -> Keybord.getInt(1, 2), times(1));
@@ -1353,6 +1877,45 @@ public class JankenCuiGameApplicationImplTest{
 			fail();
 		}
 	}
+
+//	/**
+//	 * testHasGameContinue00 異常系
+//	 * void hasGameContinue() throws SystemException
+//	 * --確認事項--
+//	 * 範囲外の整数を入力し処理が進んでしまった場合、SystemExceptionを発生させる
+//	 * --条件--
+//	 * KeybordクラスはgetIntメソッドで異常値を返すモック
+//	 * --検証項目--
+//	 * 1. SystemExceptionがスローされるか
+//	 * 2. getIntメソッドが1回呼び出されているか
+//	 */
+//	@Test
+//	public void testHasGameContinue00() {
+//		//テストデータ
+//		int illegalValue = -1;
+//
+//		//モック化
+//		try(MockedStatic<Keybord> mockKeybord = mockStatic(Keybord.class)){
+//			mockKeybord.when(() -> Keybord.getInt(1, 2)).thenReturn(illegalValue);
+//
+//			//準備
+////			Method method = JankenCuiGameApplicationImpl.class.getDeclaredMethod("hasGameContinue");
+////			method.setAccessible(true);
+//			JankenCuiGameApplicationImpl game = new JankenCuiGameApplicationImpl();
+//			//テストメソッド
+////			InvocationTargetException e = assertThrows(InvocationTargetException.class, () -> method.invoke(this.jankenCuiGameApplicationImpl));
+//			SystemException result = assertThrows(SystemException.class, () -> game.hasGameContinue());
+//			//検証
+////			assertEquals(SystemException.class , e.getTargetException().getClass());
+//			assertEquals(true, result instanceof SystemException);
+//			assertEquals("システムエラーが発生しました。終了します。", result.getSysMsg());
+//			mockKeybord.verify(() -> Keybord.getInt(1, 2), times(1));
+//
+//		}catch(Exception  e) {
+//			e.printStackTrace();
+//			fail();
+//		}
+//	}
 
 	/**
 	 * testGetPlayerList001 正常系
@@ -1673,53 +2236,4 @@ public class JankenCuiGameApplicationImplTest{
 //		}
 //	}
 
-	/**
-	 * testAction001 正常系
-	 * public void action() throws SystemException
-	 * --確認事項--
-	 * isCheckJankenPlayerCountメソッドで一回目はfalse、2回目はtrueを返し、
-	 * judgeメソッドで一回目はDRAW、2回目はROCKを返し、
-	 * hasGameContinueメソッドで一回目はtrue、2回目はfalseを返ようにし正常に処理が進む
-	 * --条件--
-	 * initはprivateメソッドなので呼び出す
-	 * playerListはnull
-	 * 他のメソッドはmock化
-	 * actionメソッドは正常に呼び出すためにspy化
-	 * --検証項目--
-	 * 1. SystemExceptionも含めて例外が発生しないことを確認
-	 */
-	@Test
-	public void testAction001() {
-
-		try{
-			//テストデータ
-			int rock = JankenParam.ROCK.getInt();
-			int paper = JankenParam.PAPER.getInt();
-			int draw = JankenParam.DRAW.getInt();
-//			List<JankenPlayer> emptyPlayerList = new ArrayList<JankenPlayer>();
-
-			//スパイ・モック化
-			JankenCuiGameApplicationImpl spyGame = spy(JankenCuiGameApplicationImpl.class);
-			doNothing().when(spyGame).createCpuOfJankenPlayer();
-			doNothing().when(spyGame).createHumanOfJankenPlayer();
-			doReturn(false).doReturn(true).when(spyGame).isCheckJankenPlayerCount();
-			doNothing().when(spyGame).selectJankenHand();
-			doReturn(draw).doReturn(rock).doReturn(paper).when(spyGame).judge();
-			doNothing().when(spyGame).viewWinner();
-			doReturn(true).doReturn(false).when(spyGame).hasGameContinue();
-
-			//準備
-			Field playerListField = JankenCuiGameApplicationImpl.class.getDeclaredField("playerList");
-			playerListField.setAccessible(true);
-			playerListField.set(spyGame, null);
-
-			//テストメソッド
-			spyGame.action();
-
-			//検証
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-	}
 }
